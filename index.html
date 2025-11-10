@@ -1,200 +1,321 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Golden Password Page</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Password Reveal — Golden Luxury</title>
+
+  <!-- Fonts & GSAP -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap');
-
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #000, #3a2c00);
-      font-family: 'Poppins', sans-serif;
-      color: #ffd700;
-      overflow: hidden;
+    :root{
+      --bg1:#1a1000; --bg2:#261a00;
+      --accent:linear-gradient(90deg,#ffd97a,#ffbb00 50%,#ffe9a0);
+      --glass:rgba(255,255,255,0.06); --glass-2:rgba(255,255,255,0.03);
+      --glass-border:rgba(255,255,255,0.08); --gold:#ffd97a; --glass-blur:12px;
     }
-
-    .container {
-      text-align: center;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 40px 60px;
-      border-radius: 20px;
-      box-shadow: 0 0 50px #b8860b;
-      border: 1px solid #ffd700;
-      max-width: 500px;
-      width: 90%;
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:
+      radial-gradient(1200px 600px at 10% 10%,rgba(255,215,122,0.08),transparent),
+      radial-gradient(1000px 500px at 90% 90%,rgba(255,187,0,0.06),transparent),
+      var(--bg1);color:#fff4d6; -webkit-font-smoothing:antialiased;}
+    /* stage */
+    .stage{min-height:100vh;display:grid;grid-template-columns:1fr 520px;gap:40px;align-items:center;padding:48px;position:relative;overflow:hidden}
+    /* responsive: one column on small screens */
+    @media (max-width:980px){.stage{grid-template-columns:1fr;padding:36px}.card-wrap{margin-top:24px}}
+    @media (max-width:640px){.stage{grid-template-columns:1fr;padding:28px}.logo{width:52px;height:52px}}
+    canvas#particles{position:absolute;inset:0;z-index:0;opacity:0.55;mix-blend-mode:screen}
+    .hero{z-index:2;padding:28px 36px}
+    .brand{display:flex;gap:18px;align-items:center}
+    .logo{width:64px;height:64px;border-radius:12px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.6);transform:translateZ(0)}
+    .logo img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+    h1{font-family:'Playfair Display';font-weight:700;font-size:48px;line-height:1;margin:22px 0;color:#ffefc0}
+    p.lead{color:rgba(255,255,255,0.8);max-width:720px;font-size:16px;margin:0 0 26px}
+    .card-wrap{z-index:3;display:grid;place-items:center}
+    .card{
+      width:100%;max-width:520px;background:linear-gradient(180deg,var(--glass),var(--glass-2));
+      border-radius:20px;padding:26px;border:1px solid var(--glass-border);backdrop-filter:blur(var(--glass-blur));
+      box-shadow:0 10px 40px rgba(0,0,0,0.6);
     }
+    .card h2{font-family:'Playfair Display';margin:0 0 12px;font-size:20px;color:#ffefc0;text-align:center}
+    .pwd-row{display:flex;gap:12px;align-items:center}
+    input[type="password"]{flex:1;padding:14px 16px;border-radius:12px;border:none;background:rgba(255,255,255,0.02);color:#ffefc0;font-size:16px;outline:none;box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4)}
+    button.primary{padding:12px 18px;border-radius:12px;border:none;background:var(--accent);background-size:300% 100%;cursor:pointer;color:#2b1b00;font-weight:700}
+    .hint{font-size:13px;color:rgba(255,255,255,0.6);margin-top:12px;text-align:center}
+    .reveal{margin-top:18px;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);min-height:92px;display:grid;align-items:center}
+    .secret{font-family:'Playfair Display';font-size:20px;line-height:1.25;color:var(--gold);text-shadow:0 6px 20px rgba(0,0,0,0.7);white-space:pre-line}
+    .editable{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px;color:var(--gold);font-family:'Playfair Display';font-size:18px;margin-top:6px;min-width:80%;outline:none}
+    .save-btn{margin-top:8px;padding:6px 12px;border:none;border-radius:8px;background:var(--accent);color:#2b1b00;font-weight:600;cursor:pointer}
+    .msg{margin-top:12px;padding:10px;border-radius:10px;background:rgba(255,80,80,0.08);color:#ffb3b3;border:1px solid rgba(255,80,80,0.12);display:none;text-align:center}
 
-    input {
-      padding: 10px;
-      border: 2px solid #ffd700;
-      border-radius: 10px;
-      outline: none;
-      font-size: 16px;
-      color: #000;
-      background: #fff;
-    }
+    /* glow line and strip */
+    .glow-line{height:2px;width:120px;background:linear-gradient(90deg,#ffbb00,#ffd97a,#ffe9a0);border-radius:20px;margin:18px 0;filter:blur(8px);opacity:0.8}
+    .strip{position:absolute;right:-120px;bottom:-80px;width:720px;height:720px;border-radius:50%;background:conic-gradient(from 120deg,#3b2900,rgba(0,0,0,0));transform:rotate(-12deg);opacity:0.6}
 
-    button {
-      margin-top: 15px;
-      background: #ffd700;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    button:hover {
-      background: #fff;
-      color: #b8860b;
-    }
-
-    #content {
-      display: none;
-      text-align: center;
-      animation: fadeIn 2s ease forwards;
-    }
-
-    .typing {
-      border-right: 2px solid #ffd700;
-      white-space: nowrap;
-      overflow: hidden;
-      width: 0;
-      animation: typing 3s steps(30, end) forwards, blink 0.6s infinite step-end alternate;
-    }
-
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-
-    @keyframes blink {
-      50% { border-color: transparent; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    img {
-      width: 200px;
-      margin: 20px 0;
-      border-radius: 15px;
-      box-shadow: 0 0 25px #ffd700;
-    }
-
-    #edit-section {
-      margin-top: 25px;
-    }
-
-    #status {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #aaa;
-    }
+    /* secret typing caret look */
+    .typing-caret { border-right: 2px solid rgba(255,217,122,0.95); padding-right:3px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="login">
-      <h2>Enter Access Key</h2>
-      <input type="password" id="password" placeholder="Enter password..." />
-      <button onclick="checkPassword()">Submit</button>
+  <div class="stage">
+    <canvas id="particles"></canvas>
+
+    <div class="hero">
+      <div class="brand">
+        <div class="logo"><img src="https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png" alt="DV"></div>
+        <div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6)">PRIVATE ACCESS</div>
+          <div style="font-weight:700;font-size:13px;color:rgba(255,255,255,0.85)">Secure reveal — golden luxury</div>
+        </div>
+      </div>
+
+      <h1 id="title">A discreet, golden reveal experience</h1>
+      <div class="glow-line" aria-hidden="true"></div>
+      <p class="lead">Scan the QR and enter the password to view the confidential contact. The interface gleams in gold tones, blending elegance with smooth animation.</p>
     </div>
 
-    <div id="content">
-      <img src="https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png" alt="Golden" />
-      <p id="line1" class="typing"></p>
-      <p id="line2" class="typing" style="animation-delay: 3.5s;"></p>
+    <div class="card-wrap">
+      <div class="card" role="form" aria-labelledby="title">
+        <h2>Enter password to unlock</h2>
+        <div class="pwd-row">
+          <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" aria-label="Password" />
+          <button id="submit" class="primary">Submit</button>
+        </div>
 
-      <div id="edit-section">
-        <input type="text" id="editableP" placeholder="Change P= value..." />
-        <button onclick="updateP()">Save</button>
-        <div id="status"></div>
+        <div class="hint">Password: 8 digits numeric</div>
+        <div class="msg" id="msg">Incorrect password. Try again.</div>
+
+        <div class="reveal">
+          <div class="secret" id="secret" style="opacity:0;transform:translateY(8px);"></div>
+        </div>
       </div>
     </div>
+
+    <div class="strip" aria-hidden="true"></div>
   </div>
 
-  <script>
-    const correctPassword = "03051997";
-    const storageURL = "https://api.jsonbin.io/v3/b/6730e18ae41b4d34e44e87a1"; // Public JSONBin storage
-    const accessKey = "$2b$10$5mQK6g7Vw8l4XcZPGz7n8OLC5mxHwKsv5.dmuBtQPNLf/fBa3lADe"; // free key example
+  <!-- Firebase via ES modules + script logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-    async function checkPassword() {
-      const entered = document.getElementById("password").value;
-      if (entered === correctPassword) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("content").style.display = "block";
-        loadData();
-      } else {
-        alert("Incorrect Password ❌");
-      }
-    }
+    // ---------- Your Firebase config (you confirmed gbbdd-f6411) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyCtrX1wzW-3v3yrETVa0LtpLT1bTfL5jgI",
+      authDomain: "gbbdd-f6411.firebaseapp.com",
+      databaseURL: "https://gbbdd-f6411-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "gbbdd-f6411",
+      storageBucket: "gbbdd-f6411.firebasestorage.app",
+      messagingSenderId: "1055596299567",
+      appId: "1:1055596299567:web:a7a1c12af8eaf90a9b4dda",
+      measurementId: "G-1WKLZLJH5G"
+    };
 
-    function typeEffect(element, text, delay = 0) {
-      element.textContent = "";
-      setTimeout(() => {
-        let i = 0;
-        const interval = setInterval(() => {
-          element.textContent += text[i];
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dbRef = ref(db, 'passwordMessage');
+
+    // ---------- constants & elements ----------
+    const CORRECT = '03051997';
+    const EMAIL_LINE = `E= divyaakalee@gmail.com`;
+    const pwd = document.getElementById('pwd');
+    const btn = document.getElementById('submit');
+    const msg = document.getElementById('msg');
+    const secretEl = document.getElementById('secret');
+
+    // ---------- utility: typed reveal (per-letter) ----------
+    function typeWriterEffect(text, element, delay = 40, callback) {
+      element.textContent = '';
+      element.classList.add('typing-caret');
+      let i = 0;
+      const step = () => {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
           i++;
-          if (i >= text.length) clearInterval(interval);
-        }, 80);
-      }, delay);
-    }
-
-    async function loadData() {
-      try {
-        const res = await fetch(storageURL, { headers: { "X-Master-Key": accessKey } });
-        const data = await res.json();
-        const P = data.record.P || "Divyashree";
-        const E = data.record.E || "divyaakalee@gmail.com";
-
-        typeEffect(document.getElementById("line1"), `E= ${E}`, 500);
-        typeEffect(document.getElementById("line2"), `P= ${P}`, 2000);
-        document.getElementById("editableP").value = P;
-      } catch (e) {
-        console.error("Error loading data:", e);
-      }
-    }
-
-    async function updateP() {
-      const newP = document.getElementById("editableP").value.trim();
-      if (!newP) return alert("Enter a valid value!");
-
-      try {
-        const res = await fetch(storageURL, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Master-Key": accessKey
-          },
-          body: JSON.stringify({
-            E: "divyaakalee@gmail.com",
-            P: newP
-          })
-        });
-
-        if (res.ok) {
-          document.getElementById("status").textContent = "✅ Updated globally!";
-          setTimeout(() => (document.getElementById("status").textContent = ""), 2000);
-          loadData();
+          setTimeout(step, delay);
         } else {
-          throw new Error("Failed to update");
+          element.classList.remove('typing-caret');
+          if (callback) callback();
+        }
+      };
+      step();
+    }
+
+    // ---------- firebase helpers ----------
+    async function fetchPValue() {
+      try {
+        const snap = await get(ref(db, 'passwordMessage/pValue'));
+        if (snap && snap.exists()) {
+          return snap.val();
+        } else {
+          // initialize if missing
+          await set(ref(db, 'passwordMessage'), { pValue: 'P= Divyashree', email: 'divyaakalee@gmail.com' });
+          return 'P= Divyashree';
         }
       } catch (e) {
-        document.getElementById("status").textContent = "❌ Error saving data";
-        console.error(e);
+        console.error('Firebase fetch error', e);
+        return 'P= Divyashree';
       }
     }
+
+    async function savePValue(value) {
+      try {
+        await set(ref(db, 'passwordMessage/pValue'), value);
+        // optional: keep email too
+        await set(ref(db, 'passwordMessage/email'), 'divyaakalee@gmail.com');
+        return true;
+      } catch (e) {
+        console.error('Firebase save error', e);
+        return false;
+      }
+    }
+
+    // Listen for remote changes so page updates live when DB changes
+    onValue(dbRef, (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+      // if secret currently visible, update the visible part (but keep existing typed content if desired)
+      // We'll update storedCustomP so next reveal uses latest
+      window._remoteP = data.pValue || 'P= Divyashree';
+    }, (err) => {
+      console.error('onValue error', err);
+    });
+
+    // ---------- showSecret: typed lines, then editable input + save ----------
+    async function showSecret() {
+      msg.style.display = 'none';
+
+      // entrance GSAP for the secret container
+      gsap.to(secretEl, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' });
+
+      // get latest pValue from firebase
+      const pVal = await fetchPValue(); // returns like 'P= Divyashree' or 'My P text' (we store full 'P= ...' string)
+
+      // prepare text: email then newline then pVal (we will type only the two lines, then append input)
+      const line1 = EMAIL_LINE;
+      const line2 = pVal;
+
+      // type line1, then line2 sequentially
+      secretEl.textContent = '';
+      typeWriterEffect(line1, secretEl, 30, () => {
+        // after line1 typed, add newline and type line2 on next line
+        secretEl.appendChild(document.createElement('br'));
+        const line2El = document.createElement('span');
+        secretEl.appendChild(line2El);
+        typeWriterEffect(line2, line2El, 30, async () => {
+          // after typing finishes, append editable input & save button (styled)
+          secretEl.appendChild(document.createElement('br'));
+
+          const input = document.createElement('input');
+          input.className = 'editable';
+          input.id = 'editableP';
+          // show only the part after 'P=' in input for nicer editing (but we save with 'P= ' prefix)
+          let justValue = line2;
+          if (justValue.startsWith('P=')) justValue = justValue.replace(/^P=\s*/, '');
+          input.value = justValue;
+
+          const br = document.createElement('br');
+          const saveBtn = document.createElement('button');
+          saveBtn.className = 'save-btn';
+          saveBtn.id = 'saveP';
+          saveBtn.textContent = 'Save';
+
+          secretEl.appendChild(input);
+          secretEl.appendChild(br);
+          secretEl.appendChild(saveBtn);
+
+          // Save click handler: update firebase with full 'P= value' string
+          saveBtn.addEventListener('click', async () => {
+            const newValRaw = (document.getElementById('editableP').value || '').trim();
+            if (!newValRaw) {
+              alert('Please enter a valid value');
+              return;
+            }
+            const fullP = 'P= ' + newValRaw;
+            const ok = await savePValue(fullP);
+            if (ok) {
+              // show small GSAP confirmation pulse and update displayed typed text quickly
+              gsap.fromTo(saveBtn, { scale: 0.98 }, { scale: 1.04, duration: 0.18, yoyo: true, repeat: 1 });
+              // update displayed P line instantly (replace the span content)
+              const spanAfter = secretEl.querySelector('span');
+              if (spanAfter) {
+                spanAfter.textContent = fullP;
+              }
+              alert('Saved globally — visible to everyone.');
+            } else {
+              alert('Failed saving to server.');
+            }
+          });
+        });
+      });
+    }
+
+    // ---------- show error ----------
+    function showError() {
+      msg.style.display = 'block';
+      msg.style.opacity = 0;
+      gsap.to(msg, { opacity: 1, y: -2, duration: 0.45, ease: 'power2.out' });
+    }
+
+    // ---------- events ----------
+    btn.addEventListener('click', () => {
+      const v = pwd.value.trim();
+      if (!v) { pwd.focus(); return; }
+      if (v === CORRECT) { showSecret(); }
+      else { showError(); }
+    });
+    pwd.addEventListener('keydown', (e) => { if (e.key === 'Enter') btn.click(); });
+
+    // ---------- decorative particles background ----------
+    (function () {
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      let W = canvas.width = innerWidth;
+      let H = canvas.height = innerHeight;
+      const parts = [];
+      const colors = ['rgba(255,217,122,0.22)', 'rgba(255,187,0,0.18)', 'rgba(197,140,255,0.08)'];
+
+      function rand(min, max) { return Math.random() * (max - min) + min; }
+      function initializeParticles() {
+        parts.length = 0;
+        const count = Math.round((W * H) / 18000);
+        for (let i = 0; i < count; i++) {
+          parts.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: rand(0.6, 3.2),
+            vx: rand(-0.12, 0.12),
+            vy: rand(-0.04, 0.04),
+            c: colors[i % colors.length]
+          });
+        }
+      }
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        for (const p of parts) {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
+          if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;
+          ctx.beginPath(); ctx.fillStyle = p.c; ctx.globalCompositeOperation = 'lighter';
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+      window.addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; initializeParticles(); });
+      initializeParticles(); draw();
+    })();
+
+    // initial micro-entrances
+    gsap.from('.logo', { y: 20, opacity: 0, duration: 0.9, ease: 'power3.out' });
+    gsap.from('#title', { y: 18, opacity: 0, duration: 1, delay: 0.12, ease: 'power3.out' });
+    gsap.from('.card', { y: 24, opacity: 0, duration: 1.1, delay: 0.25, ease: 'power3.out' });
+
+    // focus
+    pwd.focus();
   </script>
 </body>
 </html>
