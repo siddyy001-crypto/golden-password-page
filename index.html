@@ -11,6 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
 
+  <!-- Firebase compat CDN (works on static hosting easily) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
   <style>
     :root{
       --bg1:#1a1000; --bg2:#261a00;
@@ -22,10 +26,8 @@
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:
       radial-gradient(1200px 600px at 10% 10%,rgba(255,215,122,0.08),transparent),
       radial-gradient(1000px 500px at 90% 90%,rgba(255,187,0,0.06),transparent),
-      var(--bg1);color:#fff4d6; -webkit-font-smoothing:antialiased;}
-    /* stage */
+      var(--bg1);color:#fff4d6;-webkit-font-smoothing:antialiased}
     .stage{min-height:100vh;display:grid;grid-template-columns:1fr 520px;gap:40px;align-items:center;padding:48px;position:relative;overflow:hidden}
-    /* responsive: one column on small screens */
     @media (max-width:980px){.stage{grid-template-columns:1fr;padding:36px}.card-wrap{margin-top:24px}}
     @media (max-width:640px){.stage{grid-template-columns:1fr;padding:28px}.logo{width:52px;height:52px}}
     canvas#particles{position:absolute;inset:0;z-index:0;opacity:0.55;mix-blend-mode:screen}
@@ -36,11 +38,7 @@
     h1{font-family:'Playfair Display';font-weight:700;font-size:48px;line-height:1;margin:22px 0;color:#ffefc0}
     p.lead{color:rgba(255,255,255,0.8);max-width:720px;font-size:16px;margin:0 0 26px}
     .card-wrap{z-index:3;display:grid;place-items:center}
-    .card{
-      width:100%;max-width:520px;background:linear-gradient(180deg,var(--glass),var(--glass-2));
-      border-radius:20px;padding:26px;border:1px solid var(--glass-border);backdrop-filter:blur(var(--glass-blur));
-      box-shadow:0 10px 40px rgba(0,0,0,0.6);
-    }
+    .card{width:100%;max-width:520px;background:linear-gradient(180deg,var(--glass),var(--glass-2));border-radius:20px;padding:26px;border:1px solid var(--glass-border);backdrop-filter:blur(var(--glass-blur));box-shadow:0 10px 40px rgba(0,0,0,0.6)}
     .card h2{font-family:'Playfair Display';margin:0 0 12px;font-size:20px;color:#ffefc0;text-align:center}
     .pwd-row{display:flex;gap:12px;align-items:center}
     input[type="password"]{flex:1;padding:14px 16px;border-radius:12px;border:none;background:rgba(255,255,255,0.02);color:#ffefc0;font-size:16px;outline:none;box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4)}
@@ -51,12 +49,8 @@
     .editable{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px;color:var(--gold);font-family:'Playfair Display';font-size:18px;margin-top:6px;min-width:80%;outline:none}
     .save-btn{margin-top:8px;padding:6px 12px;border:none;border-radius:8px;background:var(--accent);color:#2b1b00;font-weight:600;cursor:pointer}
     .msg{margin-top:12px;padding:10px;border-radius:10px;background:rgba(255,80,80,0.08);color:#ffb3b3;border:1px solid rgba(255,80,80,0.12);display:none;text-align:center}
-
-    /* glow line and strip */
     .glow-line{height:2px;width:120px;background:linear-gradient(90deg,#ffbb00,#ffd97a,#ffe9a0);border-radius:20px;margin:18px 0;filter:blur(8px);opacity:0.8}
     .strip{position:absolute;right:-120px;bottom:-80px;width:720px;height:720px;border-radius:50%;background:conic-gradient(from 120deg,#3b2900,rgba(0,0,0,0));transform:rotate(-12deg);opacity:0.6}
-
-    /* secret typing caret look */
     .typing-caret { border-right: 2px solid rgba(255,217,122,0.95); padding-right:3px; }
   </style>
 </head>
@@ -69,24 +63,24 @@
         <div class="logo"><img src="https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png" alt="DV"></div>
         <div>
           <div style="font-size:12px;color:rgba(255,255,255,0.6)">PRIVATE ACCESS</div>
-          <div style="font-weight:700;font-size:13px;color:rgba(255,255,255,0.85)">Secure reveal — golden luxury</div>
+          <div style="font-weight:700;font-size:13px;color:rgba(255,255,255,0.85)">WALLET</div>
         </div>
       </div>
 
-      <h1 id="title">A discreet, golden reveal experience</h1>
+      <h1 id="title">Welcome Ms. Divya</h1>
       <div class="glow-line" aria-hidden="true"></div>
-      <p class="lead">Scan the QR and enter the password to view the confidential contact. The interface gleams in gold tones, blending elegance with smooth animation.</p>
+      <p class="lead"></p>
     </div>
 
     <div class="card-wrap">
       <div class="card" role="form" aria-labelledby="title">
-        <h2>Enter password to unlock</h2>
+        <h2>⚜️</h2>
         <div class="pwd-row">
           <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" aria-label="Password" />
           <button id="submit" class="primary">Submit</button>
         </div>
 
-        <div class="hint">Password: 8 digits numeric</div>
+        <div class="hint">CREDENTIALS</div>
         <div class="msg" id="msg">Incorrect password. Try again.</div>
 
         <div class="reveal">
@@ -98,12 +92,8 @@
     <div class="strip" aria-hidden="true"></div>
   </div>
 
-  <!-- Firebase via ES modules + script logic -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
-
-    // ---------- Your Firebase config (you confirmed gbbdd-f6411) ----------
+  <script>
+    // ---------- Firebase config and init (compat CDN) ----------
     const firebaseConfig = {
       apiKey: "AIzaSyCtrX1wzW-3v3yrETVa0LtpLT1bTfL5jgI",
       authDomain: "gbbdd-f6411.firebaseapp.com",
@@ -114,10 +104,9 @@
       appId: "1:1055596299567:web:a7a1c12af8eaf90a9b4dda",
       measurementId: "G-1WKLZLJH5G"
     };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const dbRef = ref(db, 'passwordMessage');
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const dbRef = db.ref('passwordMessage');
 
     // ---------- constants & elements ----------
     const CORRECT = '03051997';
@@ -127,7 +116,7 @@
     const msg = document.getElementById('msg');
     const secretEl = document.getElementById('secret');
 
-    // ---------- utility: typed reveal (per-letter) ----------
+    // ---------- typed reveal (per-letter) ----------
     function typeWriterEffect(text, element, delay = 40, callback) {
       element.textContent = '';
       element.classList.add('typing-caret');
@@ -148,12 +137,12 @@
     // ---------- firebase helpers ----------
     async function fetchPValue() {
       try {
-        const snap = await get(ref(db, 'passwordMessage/pValue'));
+        const snap = await db.ref('passwordMessage/pValue').get();
         if (snap && snap.exists()) {
           return snap.val();
         } else {
           // initialize if missing
-          await set(ref(db, 'passwordMessage'), { pValue: 'P= Divyashree', email: 'divyaakalee@gmail.com' });
+          await db.ref('passwordMessage').set({ pValue: 'P= Divyashree', email: 'divyaakalee@gmail.com' });
           return 'P= Divyashree';
         }
       } catch (e) {
@@ -164,9 +153,9 @@
 
     async function savePValue(value) {
       try {
-        await set(ref(db, 'passwordMessage/pValue'), value);
-        // optional: keep email too
-        await set(ref(db, 'passwordMessage/email'), 'divyaakalee@gmail.com');
+        await db.ref('passwordMessage/pValue').set(value);
+        // ensure email also present (optional)
+        await db.ref('passwordMessage/email').set('divyaakalee@gmail.com');
         return true;
       } catch (e) {
         console.error('Firebase save error', e);
@@ -174,46 +163,40 @@
       }
     }
 
-    // Listen for remote changes so page updates live when DB changes
-    onValue(dbRef, (snapshot) => {
+    // Listen for remote changes so the page sees updates live
+    dbRef.on('value', (snapshot) => {
       const data = snapshot.val();
       if (!data) return;
-      // if secret currently visible, update the visible part (but keep existing typed content if desired)
-      // We'll update storedCustomP so next reveal uses latest
       window._remoteP = data.pValue || 'P= Divyashree';
     }, (err) => {
-      console.error('onValue error', err);
+      console.error('db on error', err);
     });
 
     // ---------- showSecret: typed lines, then editable input + save ----------
     async function showSecret() {
       msg.style.display = 'none';
-
-      // entrance GSAP for the secret container
       gsap.to(secretEl, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' });
 
-      // get latest pValue from firebase
-      const pVal = await fetchPValue(); // returns like 'P= Divyashree' or 'My P text' (we store full 'P= ...' string)
-
-      // prepare text: email then newline then pVal (we will type only the two lines, then append input)
+      const pVal = await fetchPValue(); // returns full "P= ..." string
       const line1 = EMAIL_LINE;
       const line2 = pVal;
 
-      // type line1, then line2 sequentially
       secretEl.textContent = '';
+      // type line1
       typeWriterEffect(line1, secretEl, 30, () => {
-        // after line1 typed, add newline and type line2 on next line
+        // newline + type line2 into a span
         secretEl.appendChild(document.createElement('br'));
         const line2El = document.createElement('span');
         secretEl.appendChild(line2El);
         typeWriterEffect(line2, line2El, 30, async () => {
-          // after typing finishes, append editable input & save button (styled)
+          // after typing, append input + save
           secretEl.appendChild(document.createElement('br'));
 
           const input = document.createElement('input');
           input.className = 'editable';
           input.id = 'editableP';
-          // show only the part after 'P=' in input for nicer editing (but we save with 'P= ' prefix)
+
+          // strip leading "P=" for the input value
           let justValue = line2;
           if (justValue.startsWith('P=')) justValue = justValue.replace(/^P=\s*/, '');
           input.value = justValue;
@@ -228,7 +211,6 @@
           secretEl.appendChild(br);
           secretEl.appendChild(saveBtn);
 
-          // Save click handler: update firebase with full 'P= value' string
           saveBtn.addEventListener('click', async () => {
             const newValRaw = (document.getElementById('editableP').value || '').trim();
             if (!newValRaw) {
@@ -238,13 +220,10 @@
             const fullP = 'P= ' + newValRaw;
             const ok = await savePValue(fullP);
             if (ok) {
-              // show small GSAP confirmation pulse and update displayed typed text quickly
               gsap.fromTo(saveBtn, { scale: 0.98 }, { scale: 1.04, duration: 0.18, yoyo: true, repeat: 1 });
-              // update displayed P line instantly (replace the span content)
+              // update the visible typed line span
               const spanAfter = secretEl.querySelector('span');
-              if (spanAfter) {
-                spanAfter.textContent = fullP;
-              }
+              if (spanAfter) spanAfter.textContent = fullP;
               alert('Saved globally — visible to everyone.');
             } else {
               alert('Failed saving to server.');
@@ -309,7 +288,7 @@
       initializeParticles(); draw();
     })();
 
-    // initial micro-entrances
+    // micro-entrances
     gsap.from('.logo', { y: 20, opacity: 0, duration: 0.9, ease: 'power3.out' });
     gsap.from('#title', { y: 18, opacity: 0, duration: 1, delay: 0.12, ease: 'power3.out' });
     gsap.from('.card', { y: 24, opacity: 0, duration: 1.1, delay: 0.25, ease: 'power3.out' });
