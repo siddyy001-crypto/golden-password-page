@@ -4,10 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Password Reveal — Golden Luxury</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+
   <style>
     :root{
       --bg1:#1a1000;--bg2:#261a00;
@@ -15,136 +18,293 @@
       --glass:rgba(255,255,255,0.06);--glass-2:rgba(255,255,255,0.03);
       --glass-border:rgba(255,255,255,0.08);--gold:#ffd97a;--glass-blur:12px;
     }
+
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:radial-gradient(1200px 600px at 10% 10%,rgba(255,215,122,0.08),transparent),radial-gradient(1000px 500px at 90% 90%,rgba(255,187,0,0.06),transparent),var(--bg1);color:#fff4d6}
-    .stage{min-height:100vh;display:grid;grid-template-columns:1fr 520px;gap:40px;align-items:center;padding:48px;position:relative;overflow:hidden}
-    canvas#particles{position:absolute;inset:0;z-index:0;opacity:0.55;mix-blend-mode:screen}
-    .hero{z-index:2;padding:28px 36px}
-    .brand{display:flex;gap:18px;align-items:center}
-    .logo{width:64px;height:64px;border-radius:12px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.6);}
-    .logo img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
-    h1{font-family:'Playfair Display';font-weight:700;font-size:48px;line-height:1;margin:22px 0;color:#ffefc0}
-    p.lead{color:rgba(255,255,255,0.8);max-width:720px;font-size:16px;margin:0 0 26px}
-    .card-wrap{z-index:3;display:grid;place-items:center}
-    .card{width:100%;max-width:520px;background:linear-gradient(180deg,var(--glass),var(--glass-2));border-radius:20px;padding:26px;border:1px solid var(--glass-border);backdrop-filter:blur(var(--glass-blur));box-shadow:0 10px 40px rgba(0,0,0,0.6);}
-    .card h2{font-family:'Playfair Display';margin:0 0 12px;font-size:20px;color:#ffefc0}
-    .pwd-row{display:flex;gap:12px;align-items:center}
-    input[type="password"]{flex:1;padding:14px 16px;border-radius:12px;border:none;background:rgba(255,255,255,0.02);color:#ffefc0;font-size:16px;outline:none;box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4)}
-    button.primary{padding:12px 18px;border-radius:12px;border:none;background:var(--accent);background-size:300% 100%;cursor:pointer;color:#2b1b00;font-weight:700}
-    .hint{font-size:13px;color:rgba(255,255,255,0.6);margin-top:12px}
-    .reveal{margin-top:18px;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);min-height:92px;display:grid;align-items:center}
-    .secret{font-family:'Playfair Display';font-size:20px;line-height:1.25;color:var(--gold);text-shadow:0 6px 20px rgba(0,0,0,0.7);white-space:pre-line}
-    .editable{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px;color:var(--gold);font-family:'Playfair Display';font-size:18px;margin-top:6px;min-width:80%;outline:none;}
-    .save-btn{margin-top:8px;padding:6px 12px;border:none;border-radius:8px;background:var(--accent);color:#2b1b00;font-weight:600;cursor:pointer;}
-    .msg{margin-top:12px;padding:10px;border-radius:10px;background:rgba(255,80,80,0.08);color:#ffb3b3;border:1px solid rgba(255,80,80,0.12);display:none}
+
+    html,body{
+      height:100%;margin:0;
+      font-family:Inter,system-ui,Arial;
+      background:radial-gradient(1200px 600px at 10% 10%,rgba(255,215,122,0.08),transparent),
+        radial-gradient(1000px 500px at 90% 90%,rgba(255,187,0,0.06),transparent),
+        var(--bg1);
+      color:#fff4d6;
+    }
+
+    /* ✅ NEW LAYOUT: one column everywhere */
+    .stage{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      gap:40px;
+      padding:32px 20px;
+      position:relative;
+      overflow:hidden;
+      max-width:900px;
+      margin:0 auto;
+    }
+
+    canvas#particles{
+      position:absolute;inset:0;z-index:0;
+      opacity:0.55;mix-blend-mode:screen
+    }
+
+    .hero{
+      z-index:2;
+      text-align:center;
+      padding:20px 0;
+      width:100%;
+    }
+
+    .brand{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:10px;
+    }
+
+    .logo{
+      width:64px;height:64px;border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 6px 30px rgba(0,0,0,0.6);
+    }
+
+    .logo img{
+      width:100%;height:100%;object-fit:cover;border-radius:12px;
+    }
+
+    h1{
+      font-family:'Playfair Display';
+      font-weight:700;
+      font-size:38px;
+      line-height:1;
+      margin:18px 0;
+      color:#ffefc0;
+    }
+
+    .lead{height:1px;color:transparent}
+
+    .card-wrap{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      z-index:3;
+    }
+
+    .card{
+      width:100%;
+      max-width:480px;
+      background:linear-gradient(180deg,var(--glass),var(--glass-2));
+      border-radius:20px;
+      padding:26px;
+      border:1px solid var(--glass-border);
+      backdrop-filter:blur(var(--glass-blur));
+      box-shadow:0 10px 40px rgba(0,0,0,0.6);
+    }
+
+    .card h2{
+      font-family:'Playfair Display';
+      margin:0 0 12px;
+      font-size:24px;
+      text-align:center;
+      color:#ffefc0;
+    }
+
+    .pwd-row{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    input[type="password"]{
+      flex:1;padding:14px 16px;border-radius:12px;border:none;
+      background:rgba(255,255,255,0.02);color:#ffefc0;font-size:16px;
+      outline:none;
+      box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4)
+    }
+
+    button.primary{
+      padding:12px 18px;border-radius:12px;border:none;
+      background:var(--accent);background-size:300% 100%;
+      cursor:pointer;color:#2b1b00;font-weight:700
+    }
+
+    .hint{
+      font-size:13px;color:rgba(255,255,255,0.6);
+      margin-top:12px;text-align:center;
+    }
+
+    .reveal{
+      margin-top:18px;padding:18px;border-radius:12px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      min-height:92px;display:grid;align-items:center;
+    }
+
+    .secret{
+      font-family:'Playfair Display';
+      font-size:20px;
+      line-height:1.25;
+      color:var(--gold);
+      text-shadow:0 6px 20px rgba(0,0,0,0.7);
+      white-space:pre-line;
+    }
+
+    .editable{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:8px;
+      padding:6px 10px;
+      color:var(--gold);
+      font-family:'Playfair Display';
+      font-size:18px;
+      margin-top:6px;
+      min-width:80%;
+      outline:none;
+    }
+
+    .save-btn{
+      margin-top:8px;
+      padding:6px 12px;
+      border:none;
+      border-radius:8px;
+      background:var(--accent);
+      color:#2b1b00;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    .msg{
+      margin-top:12px;padding:10px;border-radius:10px;
+      background:rgba(255,80,80,0.08);color:#ffb3b3;
+      border:1px solid rgba(255,80,80,0.12);
+      display:none;
+      text-align:center;
+    }
+
   </style>
 </head>
 <body>
+
   <div class="stage">
     <canvas id="particles"></canvas>
+
     <div class="hero">
       <div class="brand">
-        <div class="logo"><img src="https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png" alt="Logo"></div>
+        <div class="logo">
+          <img src="https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png">
+        </div>
         <div>
           <div style="font-size:12px;color:rgba(255,255,255,0.6)">PRIVATE ACCESS</div>
           <div style="font-weight:700;font-size:13px;color:rgba(255,255,255,0.85)">WALLET</div>
         </div>
       </div>
+
       <h1 id="title">Welcome Ms. Divya</h1>
-      <p class="lead"></p>
     </div>
 
     <div class="card-wrap">
-      <div class="card" role="form" aria-labelledby="title">
+      <div class="card">
         <h2>⚜️</h2>
+
         <div class="pwd-row">
-          <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" aria-label="Password" />
+          <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" />
           <button id="submit" class="primary">Submit</button>
         </div>
+
         <div class="hint">CREDENTIALS</div>
         <div class="msg" id="msg">Incorrect password. Try again.</div>
 
-        <div class="reveal" id="reveal" aria-live="polite">
+        <div class="reveal">
           <div class="secret" id="secret" style="opacity:0;transform:translateY(8px);"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    const CORRECT = '03051997';
-    const EMAIL_LINE = `E= divyaakalee@gmail.com`;
+<script>
+  const CORRECT = '03051997';
+  const EMAIL_LINE = `E= divyaakalee@gmail.com`;
 
-    function getCustomP() {
-      return localStorage.getItem('customP') || 'P= Divyashree';
-    }
+  function getCustomP() {
+    return localStorage.getItem('customP') || 'P= Divyashree';
+  }
 
-    function setCustomP(newVal) {
-      localStorage.setItem('customP', newVal);
-    }
+  function setCustomP(newVal) {
+    localStorage.setItem('customP', newVal);
+  }
 
-    const pwd = document.getElementById('pwd'),
-          btn = document.getElementById('submit'),
-          msg = document.getElementById('msg'),
-          secretEl = document.getElementById('secret');
+  const pwd=document.getElementById('pwd'),
+        btn=document.getElementById('submit'),
+        msg=document.getElementById('msg'),
+        secretEl=document.getElementById('secret');
 
-    function typeWriterEffect(text, element, delay = 50, callback) {
-      element.textContent = '';
-      let i = 0;
-      const type = () => {
-        if (i < text.length) {
-          element.textContent += text.charAt(i);
-          i++;
-          setTimeout(type, delay);
-        } else if (callback) callback();
-      };
-      type();
-    }
+  function typeWriterEffect(text, element, delay = 50, callback) {
+    element.textContent = '';
+    let i = 0;
+    const type = () => {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+        setTimeout(type, delay);
+      } else if (callback) callback();
+    };
+    type();
+  }
 
-    function showSecret() {
-      msg.style.display = 'none';
-      secretEl.style.opacity = 1;
-      secretEl.style.transform = 'translateY(0)';
-      const text = `${EMAIL_LINE}\n${getCustomP()}`;
-      secretEl.textContent = '';
-      typeWriterEffect(text, secretEl, 40, () => {
-        const input = document.createElement('input');
-        input.className = 'editable';
-        input.id = 'editableP';
-        input.value = getCustomP();
+  function showSecret(){
+    msg.style.display='none';
+    secretEl.style.opacity=1;
+    secretEl.style.transform='translateY(0)';
 
-        const saveBtn = document.createElement('button');
-        saveBtn.className = 'save-btn';
-        saveBtn.id = 'saveP';
-        saveBtn.textContent = 'Save';
+    const text = `${EMAIL_LINE}\n${getCustomP()}`;
 
-        secretEl.appendChild(document.createElement('br'));
-        secretEl.appendChild(input);
-        secretEl.appendChild(document.createElement('br'));
-        secretEl.appendChild(saveBtn);
+    secretEl.textContent='';
+    typeWriterEffect(text, secretEl, 40, () => {
+      const input=document.createElement('input');
+      input.className='editable';
+      input.id='editableP';
+      input.value=getCustomP();
 
-        saveBtn.addEventListener('click', () => {
-          const newVal = input.value.trim();
-          if (newVal) {
-            setCustomP(newVal);
-            alert('Saved!');
-          }
-        });
+      const saveBtn=document.createElement('button');
+      saveBtn.className='save-btn';
+      saveBtn.id='saveP';
+      saveBtn.textContent='Save';
+
+      secretEl.appendChild(document.createElement('br'));
+      secretEl.appendChild(input);
+      secretEl.appendChild(document.createElement('br'));
+      secretEl.appendChild(saveBtn);
+
+      saveBtn.addEventListener('click',()=>{
+        const newVal=input.value.trim();
+        if(newVal){
+          setCustomP(newVal);
+          alert('Saved!');
+        }
       });
-    }
-
-    function showError(){
-      msg.style.display='block';
-      msg.style.opacity=0;
-      gsap.to(msg,{opacity:1,y:-2,duration:0.45,ease:'power2.out'});
-    }
-
-    btn.addEventListener('click',()=>{
-      const v=pwd.value.trim();
-      if(!v){pwd.focus();return;}
-      if(v===CORRECT){showSecret();}else{showError();}
     });
-    pwd.addEventListener('keydown',(e)=>{if(e.key==='Enter'){btn.click();}});
-  </script>
+  }
+
+  function showError(){
+    msg.style.display='block';
+    msg.style.opacity=0;
+    gsap.to(msg,{opacity:1,y:-2,duration:0.45,ease:'power2.out'});
+  }
+
+  btn.addEventListener('click',()=>{
+    const v=pwd.value.trim();
+    if(!v){pwd.focus();return;}
+    if(v===CORRECT){showSecret();} else {showError();}
+  });
+
+  pwd.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter'){btn.click();}
+  });
+
+</script>
+
 </body>
 </html>
