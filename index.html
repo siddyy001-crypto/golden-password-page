@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Golden Password Page</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #c9a348, #2b1e0a);
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(0,0,0,0.4);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 40px gold;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 2s ease;
+    }
+
+    .logo-box {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 20px;
+      background: url('https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png') center/cover no-repeat;
+      border-radius: 20px;
+      box-shadow: 0 0 25px gold;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    input {
+      padding: 10px 20px;
+      border: 2px solid gold;
+      border-radius: 10px;
+      outline: none;
+      font-size: 18px;
+      background: black;
+      color: gold;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 25px;
+      font-size: 18px;
+      color: black;
+      background: gold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 20px gold;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px gold;
+    }
+
+    .hidden-message {
+      display: none;
+      margin-top: 20px;
+      font-size: 20px;
+      background: linear-gradient(90deg, gold, #fff4b5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s infinite linear;
+    }
+
+    @keyframes shimmer {
+      from { background-position: -200px; }
+      to { background-position: 200px; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-box"></div>
+    <h1>Enter Access Password</h1>
+    <input type="password" id="password" placeholder="Enter password" />
+    <br />
+    <button onclick="checkPassword()">Submit</button>
+    <div id="message" class="hidden-message"></div>
+  </div>
+  <script>
+    function checkPassword() {
+      const input = document.getElementById('password').value;
+      const message = document.getElementById('message');
+      if (input === '03051997') {
+        message.style.display = 'block';
+        message.innerHTML = 'E= divyaakalee@gmail.com<br>P= Divyashree';
+      } else {
+        message.style.display = 'block';
+        message.innerHTML = 'Incorrect password ❌';
+        message.style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>
