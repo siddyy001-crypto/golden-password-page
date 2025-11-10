@@ -1,310 +1,200 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Password Reveal — Golden Luxury</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-  <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Golden Password Page</title>
   <style>
-    :root{
-      --bg1:#1a1000;--bg2:#261a00;
-      --accent:linear-gradient(90deg,#ffd97a,#ffbb00 50%,#ffe9a0);
-      --glass:rgba(255,255,255,0.06);--glass-2:rgba(255,255,255,0.03);
-      --glass-border:rgba(255,255,255,0.08);--gold:#ffd97a;--glass-blur:12px;
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap');
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #000, #3a2c00);
+      font-family: 'Poppins', sans-serif;
+      color: #ffd700;
+      overflow: hidden;
     }
 
-    *{box-sizing:border-box}
-
-    html,body{
-      height:100%;margin:0;
-      font-family:Inter,system-ui,Arial;
-      background:radial-gradient(1200px 600px at 10% 10%,rgba(255,215,122,0.08),transparent),
-        radial-gradient(1000px 500px at 90% 90%,rgba(255,187,0,0.06),transparent),
-        var(--bg1);
-      color:#fff4d6;
+    .container {
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px 60px;
+      border-radius: 20px;
+      box-shadow: 0 0 50px #b8860b;
+      border: 1px solid #ffd700;
+      max-width: 500px;
+      width: 90%;
     }
 
-    /* ✅ NEW LAYOUT: one column everywhere */
-    .stage{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:flex-start;
-      gap:40px;
-      padding:32px 20px;
-      position:relative;
-      overflow:hidden;
-      max-width:900px;
-      margin:0 auto;
+    input {
+      padding: 10px;
+      border: 2px solid #ffd700;
+      border-radius: 10px;
+      outline: none;
+      font-size: 16px;
+      color: #000;
+      background: #fff;
     }
 
-    canvas#particles{
-      position:absolute;inset:0;z-index:0;
-      opacity:0.55;mix-blend-mode:screen
+    button {
+      margin-top: 15px;
+      background: #ffd700;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
     }
 
-    .hero{
-      z-index:2;
-      text-align:center;
-      padding:20px 0;
-      width:100%;
+    button:hover {
+      background: #fff;
+      color: #b8860b;
     }
 
-    .brand{
-      display:flex;
-      gap:14px;
-      align-items:center;
-      justify-content:center;
-      margin-bottom:10px;
+    #content {
+      display: none;
+      text-align: center;
+      animation: fadeIn 2s ease forwards;
     }
 
-    .logo{
-      width:64px;height:64px;border-radius:12px;
-      overflow:hidden;
-      box-shadow:0 6px 30px rgba(0,0,0,0.6);
+    .typing {
+      border-right: 2px solid #ffd700;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: typing 3s steps(30, end) forwards, blink 0.6s infinite step-end alternate;
     }
 
-    .logo img{
-      width:100%;height:100%;object-fit:cover;border-radius:12px;
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
     }
 
-    h1{
-      font-family:'Playfair Display';
-      font-weight:700;
-      font-size:38px;
-      line-height:1;
-      margin:18px 0;
-      color:#ffefc0;
+    @keyframes blink {
+      50% { border-color: transparent; }
     }
 
-    .lead{height:1px;color:transparent}
-
-    .card-wrap{
-      width:100%;
-      display:flex;
-      justify-content:center;
-      z-index:3;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .card{
-      width:100%;
-      max-width:480px;
-      background:linear-gradient(180deg,var(--glass),var(--glass-2));
-      border-radius:20px;
-      padding:26px;
-      border:1px solid var(--glass-border);
-      backdrop-filter:blur(var(--glass-blur));
-      box-shadow:0 10px 40px rgba(0,0,0,0.6);
+    img {
+      width: 200px;
+      margin: 20px 0;
+      border-radius: 15px;
+      box-shadow: 0 0 25px #ffd700;
     }
 
-    .card h2{
-      font-family:'Playfair Display';
-      margin:0 0 12px;
-      font-size:24px;
-      text-align:center;
-      color:#ffefc0;
+    #edit-section {
+      margin-top: 25px;
     }
 
-    .pwd-row{
-      display:flex;
-      gap:12px;
-      align-items:center;
+    #status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #aaa;
     }
-
-    input[type="password"]{
-      flex:1;padding:14px 16px;border-radius:12px;border:none;
-      background:rgba(255,255,255,0.02);color:#ffefc0;font-size:16px;
-      outline:none;
-      box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4)
-    }
-
-    button.primary{
-      padding:12px 18px;border-radius:12px;border:none;
-      background:var(--accent);background-size:300% 100%;
-      cursor:pointer;color:#2b1b00;font-weight:700
-    }
-
-    .hint{
-      font-size:13px;color:rgba(255,255,255,0.6);
-      margin-top:12px;text-align:center;
-    }
-
-    .reveal{
-      margin-top:18px;padding:18px;border-radius:12px;
-      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.03);
-      min-height:92px;display:grid;align-items:center;
-    }
-
-    .secret{
-      font-family:'Playfair Display';
-      font-size:20px;
-      line-height:1.25;
-      color:var(--gold);
-      text-shadow:0 6px 20px rgba(0,0,0,0.7);
-      white-space:pre-line;
-    }
-
-    .editable{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.1);
-      border-radius:8px;
-      padding:6px 10px;
-      color:var(--gold);
-      font-family:'Playfair Display';
-      font-size:18px;
-      margin-top:6px;
-      min-width:80%;
-      outline:none;
-    }
-
-    .save-btn{
-      margin-top:8px;
-      padding:6px 12px;
-      border:none;
-      border-radius:8px;
-      background:var(--accent);
-      color:#2b1b00;
-      font-weight:600;
-      cursor:pointer;
-    }
-
-    .msg{
-      margin-top:12px;padding:10px;border-radius:10px;
-      background:rgba(255,80,80,0.08);color:#ffb3b3;
-      border:1px solid rgba(255,80,80,0.12);
-      display:none;
-      text-align:center;
-    }
-
   </style>
 </head>
 <body>
-
-  <div class="stage">
-    <canvas id="particles"></canvas>
-
-    <div class="hero">
-      <div class="brand">
-        <div class="logo">
-          <img src="https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png">
-        </div>
-        <div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.6)">PRIVATE ACCESS</div>
-          <div style="font-weight:700;font-size:13px;color:rgba(255,255,255,0.85)">WALLET</div>
-        </div>
-      </div>
-
-      <h1 id="title">Welcome Ms. Divya</h1>
+  <div class="container">
+    <div id="login">
+      <h2>Enter Access Key</h2>
+      <input type="password" id="password" placeholder="Enter password..." />
+      <button onclick="checkPassword()">Submit</button>
     </div>
 
-    <div class="card-wrap">
-      <div class="card">
-        <h2>⚜️</h2>
+    <div id="content">
+      <img src="https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png" alt="Golden" />
+      <p id="line1" class="typing"></p>
+      <p id="line2" class="typing" style="animation-delay: 3.5s;"></p>
 
-        <div class="pwd-row">
-          <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" />
-          <button id="submit" class="primary">Submit</button>
-        </div>
-
-        <div class="hint">CREDENTIALS</div>
-        <div class="msg" id="msg">Incorrect password. Try again.</div>
-
-        <div class="reveal">
-          <div class="secret" id="secret" style="opacity:0;transform:translateY(8px);"></div>
-        </div>
+      <div id="edit-section">
+        <input type="text" id="editableP" placeholder="Change P= value..." />
+        <button onclick="updateP()">Save</button>
+        <div id="status"></div>
       </div>
     </div>
   </div>
 
-<script>
-  const CORRECT = '03051997';
-  const EMAIL_LINE = `E= divyaakalee@gmail.com`;
+  <script>
+    const correctPassword = "03051997";
+    const storageURL = "https://api.jsonbin.io/v3/b/6730e18ae41b4d34e44e87a1"; // Public JSONBin storage
+    const accessKey = "$2b$10$5mQK6g7Vw8l4XcZPGz7n8OLC5mxHwKsv5.dmuBtQPNLf/fBa3lADe"; // free key example
 
-  function getCustomP() {
-    return localStorage.getItem('customP') || 'P= Divyashree';
-  }
+    async function checkPassword() {
+      const entered = document.getElementById("password").value;
+      if (entered === correctPassword) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("content").style.display = "block";
+        loadData();
+      } else {
+        alert("Incorrect Password ❌");
+      }
+    }
 
-  function setCustomP(newVal) {
-    localStorage.setItem('customP', newVal);
-  }
+    function typeEffect(element, text, delay = 0) {
+      element.textContent = "";
+      setTimeout(() => {
+        let i = 0;
+        const interval = setInterval(() => {
+          element.textContent += text[i];
+          i++;
+          if (i >= text.length) clearInterval(interval);
+        }, 80);
+      }, delay);
+    }
 
-  const pwd=document.getElementById('pwd'),
-        btn=document.getElementById('submit'),
-        msg=document.getElementById('msg'),
-        secretEl=document.getElementById('secret');
+    async function loadData() {
+      try {
+        const res = await fetch(storageURL, { headers: { "X-Master-Key": accessKey } });
+        const data = await res.json();
+        const P = data.record.P || "Divyashree";
+        const E = data.record.E || "divyaakalee@gmail.com";
 
-  function typeWriterEffect(text, element, delay = 50, callback) {
-    element.textContent = '';
-    let i = 0;
-    const type = () => {
-      if (i < text.length) {
-        element.textContent += text.charAt(i);
-        i++;
-        setTimeout(type, delay);
-      } else if (callback) callback();
-    };
-    type();
-  }
+        typeEffect(document.getElementById("line1"), `E= ${E}`, 500);
+        typeEffect(document.getElementById("line2"), `P= ${P}`, 2000);
+        document.getElementById("editableP").value = P;
+      } catch (e) {
+        console.error("Error loading data:", e);
+      }
+    }
 
-  function showSecret(){
-    msg.style.display='none';
-    secretEl.style.opacity=1;
-    secretEl.style.transform='translateY(0)';
+    async function updateP() {
+      const newP = document.getElementById("editableP").value.trim();
+      if (!newP) return alert("Enter a valid value!");
 
-    const text = `${EMAIL_LINE}\n${getCustomP()}`;
+      try {
+        const res = await fetch(storageURL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": accessKey
+          },
+          body: JSON.stringify({
+            E: "divyaakalee@gmail.com",
+            P: newP
+          })
+        });
 
-    secretEl.textContent='';
-    typeWriterEffect(text, secretEl, 40, () => {
-      const input=document.createElement('input');
-      input.className='editable';
-      input.id='editableP';
-      input.value=getCustomP();
-
-      const saveBtn=document.createElement('button');
-      saveBtn.className='save-btn';
-      saveBtn.id='saveP';
-      saveBtn.textContent='Save';
-
-      secretEl.appendChild(document.createElement('br'));
-      secretEl.appendChild(input);
-      secretEl.appendChild(document.createElement('br'));
-      secretEl.appendChild(saveBtn);
-
-      saveBtn.addEventListener('click',()=>{
-        const newVal=input.value.trim();
-        if(newVal){
-          setCustomP(newVal);
-          alert('Saved!');
+        if (res.ok) {
+          document.getElementById("status").textContent = "✅ Updated globally!";
+          setTimeout(() => (document.getElementById("status").textContent = ""), 2000);
+          loadData();
+        } else {
+          throw new Error("Failed to update");
         }
-      });
-    });
-  }
-
-  function showError(){
-    msg.style.display='block';
-    msg.style.opacity=0;
-    gsap.to(msg,{opacity:1,y:-2,duration:0.45,ease:'power2.out'});
-  }
-
-  btn.addEventListener('click',()=>{
-    const v=pwd.value.trim();
-    if(!v){pwd.focus();return;}
-    if(v===CORRECT){showSecret();} else {showError();}
-  });
-
-  pwd.addEventListener('keydown',(e)=>{
-    if(e.key==='Enter'){btn.click();}
-  });
-
-</script>
-
+      } catch (e) {
+        document.getElementById("status").textContent = "❌ Error saving data";
+        console.error(e);
+      }
+    }
+  </script>
 </body>
 </html>
