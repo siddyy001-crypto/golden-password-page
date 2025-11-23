@@ -18,12 +18,11 @@
   <style>
     :root{
       --bg1:#0f0a00; --bg2:#1f1400;
-      --accent:linear-gradient(135deg, #fff4d6, #ffd97a, #ffbb00); /* Beige/Gold Gradient */
+      --accent:linear-gradient(90deg,#ffd97a,#ffbb00 50%,#ffe9a0);
       --glass:rgba(20, 20, 20, 0.6); 
       --glass-border:rgba(255, 215, 0, 0.3); 
       --gold:#ffd97a; 
-      --gold-border: #c59d00;
-      --text-dark: #3e2700;
+      --gold-glow: #ffbb00;
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:
@@ -77,7 +76,7 @@
       border: 1px solid rgba(255, 215, 0, 0.2);
     }
 
-    /* RIPPLE ANIMATION */
+    /* RIPPLE ANIMATION STYLES */
     span.ripple {
       position: absolute;
       border-radius: 50%;
@@ -87,14 +86,25 @@
       pointer-events: none; 
     }
     @keyframes ripple {
-      to { transform: scale(4); opacity: 0; }
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
     }
 
+    /* Sidham Glowing Corners/Borders */
     .card::before {
-      content:''; position:absolute; inset:0; border-radius:20px; padding:1px;
+      content:'';
+      position:absolute;
+      inset:0;
+      border-radius:20px;
+      padding:1px;
       background:linear-gradient(180deg, rgba(255,215,0,0.6), transparent 40%, transparent 60%, rgba(255,215,0,0.6));
       -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; opacity: 0.8;
+      -webkit-mask-composite:xor;
+      mask-composite:exclude;
+      pointer-events:none;
+      opacity: 0.8;
     }
     
     .card h2{font-family:'Playfair Display';margin:0 0 12px;font-size:20px;color:#ffefc0;text-align:center; pointer-events: none;}
@@ -104,37 +114,8 @@
     input[type="password"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);color:#ffefc0;font-size:16px;outline:none;transition:0.3s}
     input[type="password"]:focus{border-color:var(--gold);box-shadow:0 0 15px rgba(255,215,0,0.1)}
     
-    /* --- UNIFIED BEIGE/GOLD BUTTON STYLE --- */
-    .gold-btn {
-      width:100%;
-      padding:12px 18px;
-      border-radius:12px;
-      border: 1px solid var(--gold-border); /* Gold Border */
-      background: var(--accent); /* Beige/Gold Gradient */
-      background-size: 200% 100%;
-      cursor:pointer;
-      color: var(--text-dark); /* Dark Brown Text */
-      font-weight:700;
-      box-shadow:0 4px 15px rgba(255,187,0,0.2); 
-      transition: transform 0.1s, box-shadow 0.3s; 
-      position: relative; 
-      overflow: hidden;
-      font-family: 'Inter', sans-serif;
-    }
-    .gold-btn:hover { box-shadow:0 0 20px rgba(255,215,0,0.4); }
-    .gold-btn:active { transform:scale(0.97); }
-
-    /* Lock Button Specifics (inherits gold-btn but smaller) */
-    .lock-btn {
-      margin-top:18px;
-      width: auto;
-      font-size: 14px;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #fff4d6, #e6cfa0); /* Slightly paler beige */
-    }
+    button.primary{width:100%;padding:12px 18px;border-radius:12px;border:none;background:var(--accent);background-size:300% 100%;cursor:pointer;color:#2b1b00;font-weight:700;box-shadow:0 4px 15px rgba(255,187,0,0.3); transition: transform 0.1s; position: relative; overflow: hidden;}
+    button.primary:active{transform:scale(0.97)}
 
     .hint{font-size:13px;color:rgba(255,255,255,0.6);margin-top:12px;text-align:center; pointer-events: none;}
     .msg{margin-top:12px;padding:10px;border-radius:10px;background:rgba(255,80,80,0.08);color:#ffb3b3;border:1px solid rgba(255,80,80,0.12);display:none;text-align:center; pointer-events: none;}
@@ -153,7 +134,27 @@
       letter-spacing: 1px;
     }
 
-    .save-wrapper { margin-top: 10px; width: 100%; display:flex; justify-content:center;}
+    .save-btn{margin-top:10px;padding:8px 16px;border:none;border-radius:8px;background:var(--accent);color:#2b1b00;font-weight:700;cursor:pointer;width:100%;max-width:140px; box-shadow:0 4px 12px rgba(255,187,0,0.2); position: relative; overflow: hidden;}
+
+    /* LOCK BUTTON STYLE */
+    .lock-btn{
+        margin-top:18px;
+        padding:8px 16px;
+        border:1px solid rgba(255,80,80,0.3);
+        border-radius:8px;
+        background:rgba(255,0,0,0.1);
+        color:#ffb3b3;
+        font-weight:600;
+        cursor:pointer;
+        font-size:13px;
+        width:auto;
+        transition:0.3s;
+        display:flex;
+        align-items:center;
+        gap:6px;
+        position: relative; overflow: hidden;
+    }
+    .lock-btn:hover{ background:rgba(255,0,0,0.2); border-color:rgba(255,80,80,0.5); }
 
     .glow-line{height:2px;width:120px;background:linear-gradient(90deg,#ffbb00,#ffd97a,#ffe9a0);border-radius:20px;margin:18px auto;filter:blur(8px);opacity:0.8}
     .strip{display:none}
@@ -165,7 +166,7 @@
       .card{max-width:520px;padding:32px}
       .pwd-row{flex-direction:row;align-items:center}
       input[type="password"]{flex:1}
-      .gold-btn{width:auto}
+      button.primary{width:auto}
     }
     @media (max-width:480px){ h1{font-size:32px} }
   </style>
@@ -200,7 +201,7 @@
         <div id="login-section">
             <div class="pwd-row">
               <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" aria-label="Password" />
-              <button id="submit" class="gold-btn">Go Ahead</button>
+              <button id="submit" class="primary">Submit</button>
             </div>
             <div class="hint">CREDENTIALS</div>
             <div class="msg" id="msg">Incorrect password. Try again.</div>
@@ -234,35 +235,19 @@
         if(type === 'lock') { sndLock.currentTime=0; sndLock.play().catch(()=>{}); }
     }
 
-    // ---------- CONFETTI FUNCTIONS ----------
-    
-    // 1. Gold Flower Spray (For Go Ahead / Update)
-    function triggerGoldConfetti() {
-        var scalar = 2;
-        var flower = confetti.shapeFromText({ text: '✿', scalar });
-        
-        // Spray of gold circles and stars
-        confetti({
-            particleCount: 30,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#ffd97a', '#ffffff', '#f5f5dc', '#d4af37'],
-            shapes: ['circle', 'star'],
-            scalar: 0.8
-        });
-    }
+    // ---------- Trigger Confetti ----------
+    function triggerConfetti() {
+        var duration = 1000;
+        var end = Date.now() + duration;
 
-    // 2. Red Flower Spray (For Lock)
-    function triggerRedConfetti() {
-        confetti({
-            particleCount: 40,
-            spread: 80,
-            origin: { y: 0.6 },
-            colors: ['#ff0000', '#8b0000', '#ffcccc'],
-            shapes: ['circle'],
-            scalar: 0.9,
-            drift: 0
-        });
+        (function frame() {
+            confetti({ particleCount: 7, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffd97a', '#ffffff', '#ffbb00'] });
+            confetti({ particleCount: 7, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ffd97a', '#ffffff', '#ffbb00'] });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        }());
     }
 
     // ---------- Firebase config ----------
@@ -330,20 +315,28 @@
       } catch (e) { return false; }
     }
 
-    // ---------- LOCK FUNCTION (Slide Animation + Red Confetti) ----------
+    // ---------- LOCK FUNCTION (Slide Animation) ----------
     function lockScreen() {
         playSound('lock');
-        triggerRedConfetti(); // RED CONFETTI ON LOCK
         
+        // 1. Scale Card Down Slightly
         gsap.to(mainCardEl, { scale: 0.98, duration: 0.2, yoyo: true, repeat: 1 });
 
+        // 2. Animate Reveal Section OUT (To Right)
         gsap.to(revealSection, { 
-            x: 60, opacity: 0, duration: 0.4, ease: 'power2.in', 
+            x: 60, 
+            opacity: 0, 
+            duration: 0.4, 
+            ease: 'power2.in', 
             onComplete: () => {
                 revealSection.style.display = 'none';
                 secretEl.innerHTML = ''; 
+                
+                // 3. Show Login Section
                 loginSection.style.display = 'block';
                 pwd.value = ''; 
+                
+                // 4. Animate Login Section IN (From Left)
                 gsap.fromTo(loginSection, 
                     { x: -60, opacity: 0 }, 
                     { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
@@ -352,22 +345,31 @@
         });
     }
 
-    // ---------- UNLOCK/SHOW SECRET (Slide + Gold Confetti) ----------
+    // ---------- UNLOCK/SHOW SECRET (Slide Animation) ----------
     async function showSecret() {
       msg.style.display = 'none';
       playSound('success'); 
-      triggerGoldConfetti(); // GOLD CONFETTI ON UNLOCK
+      triggerConfetti(); 
 
+      // 1. Scale Card Down Slightly
       gsap.to(mainCardEl, { scale: 0.98, duration: 0.2, yoyo: true, repeat: 1 });
 
+      // 2. Animate Login Section OUT (To Left)
       gsap.to(loginSection, { 
-          x: -60, opacity: 0, duration: 0.4, ease: 'power2.in', 
+          x: -60, 
+          opacity: 0, 
+          duration: 0.4, 
+          ease: 'power2.in', 
           onComplete: () => {
               loginSection.style.display = 'none';
+              
+              // 3. Show Reveal Section
               revealSection.style.display = 'flex';
+              
+              // 4. Animate Reveal Section IN (From Right)
               gsap.fromTo(revealSection, 
                   { x: 60, opacity: 0 }, 
-                  { x: 0, opacity: 1, duration: 0.6, ease: 'back.out(1.2)' } 
+                  { x: 0, opacity: 1, duration: 0.6, ease: 'back.out(1.2)' } // Smooth back ease
               );
           }
       });
@@ -395,25 +397,19 @@
 
           const br = document.createElement('br');
           
-          // Wrapper for layout
-          const btnWrap = document.createElement('div');
-          btnWrap.className = 'save-wrapper';
-
           const saveBtn = document.createElement('button');
-          saveBtn.className = 'gold-btn'; // Beige/Gold style
+          saveBtn.className = 'save-btn';
           saveBtn.id = 'saveP';
-          saveBtn.textContent = 'Update'; // Text Changed
-
-          btnWrap.appendChild(saveBtn);
+          saveBtn.textContent = 'Save';
 
           const lockBtn = document.createElement('button');
-          lockBtn.className = 'gold-btn lock-btn'; // Inherit gold style + specific lock positioning
+          lockBtn.className = 'lock-btn';
           lockBtn.innerHTML = '🔒 Lock';
           lockBtn.onclick = lockScreen; 
 
           secretEl.appendChild(input);
           secretEl.appendChild(br);
-          secretEl.appendChild(btnWrap);
+          secretEl.appendChild(saveBtn);
           secretEl.appendChild(document.createElement('br'));
           secretEl.appendChild(lockBtn);
 
@@ -428,10 +424,10 @@
             const ok = await savePValue(fullP);
             if (ok) {
               playSound('success');
-              triggerGoldConfetti(); // GOLD CONFETTI ON UPDATE
               gsap.fromTo(saveBtn, { scale: 0.98 }, { scale: 1.04, duration: 0.18, yoyo: true, repeat: 1 });
               const spanAfter = secretEl.querySelector('span');
               if (spanAfter) spanAfter.textContent = fullP;
+              triggerConfetti(); 
             } else {
               playSound('error');
               alert('Failed saving.');
@@ -451,7 +447,7 @@
 
     btn.addEventListener('click', () => {
       playSound('click');
-      // triggerGoldConfetti(); // Removed immediate confetti on click, only on success
+      triggerConfetti(); 
       const v = pwd.value.trim();
       if (!v) { pwd.focus(); return; }
       if (v === CORRECT) { showSecret(); }
@@ -479,7 +475,7 @@
     mainCard.addEventListener("click", createRipple);
 
 
-    // ---------- JUGNU PARTICLES ----------
+    // ---------- JUGNU PARTICLES (HIGH DENSITY) ----------
     (function () {
       const canvas = document.getElementById('particles');
       const ctx = canvas.getContext('2d');
@@ -490,6 +486,7 @@
       function rand(min, max) { return Math.random() * (max - min) + min; }
       function initializeParticles() {
         parts.length = 0;
+        // Increased Density (Low divisor = more particles)
         const count = Math.round((W * H) / 5000); 
         for (let i = 0; i < count; i++) {
           parts.push({
