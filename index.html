@@ -5,30 +5,32 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Password Reveal — Golden Luxury</title>
 
-  <!-- Fonts & GSAP -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- Firebase compat CDN (works on static hosting easily) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <style>
     :root{
-      --bg1:#1a1000; --bg2:#261a00;
+      --bg1:#0f0a00; --bg2:#1f1400;
       --accent:linear-gradient(90deg,#ffd97a,#ffbb00 50%,#ffe9a0);
-      --glass:rgba(255,255,255,0.06); --glass-2:rgba(255,255,255,0.03);
-      --glass-border:rgba(255,255,255,0.08); --gold:#ffd97a; --glass-blur:12px;
+      --glass:rgba(20, 20, 20, 0.6); 
+      --glass-border:rgba(255, 215, 0, 0.3); 
+      --gold:#ffd97a; 
+      --gold-glow: #ffbb00;
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:
-      radial-gradient(1200px 600px at 10% 10%,rgba(255,215,122,0.08),transparent),
-      radial-gradient(1000px 500px at 90% 90%,rgba(255,187,0,0.06),transparent),
+      radial-gradient(1200px 600px at 10% 10%,rgba(255,215,122,0.04),transparent),
+      radial-gradient(1000px 500px at 90% 90%,rgba(255,187,0,0.03),transparent),
       var(--bg1);color:#fff4d6;-webkit-font-smoothing:antialiased}
 
-    /* ---------- Responsive single-column layout (phone-optimized) ---------- */
+    /* Layout */
     .stage{
       min-height:100vh;
       display:flex;
@@ -44,53 +46,137 @@
       margin:0 auto;
     }
 
-    canvas#particles{position:absolute;inset:0;z-index:0;opacity:0.55;mix-blend-mode:screen}
+    canvas#particles{position:absolute;inset:0;z-index:0;mix-blend-mode:screen;pointer-events:none}
 
     .hero{z-index:2;padding:10px 0;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center}
     .brand{display:flex;gap:12px;align-items:center;justify-content:center}
-    .logo{width:64px;height:64px;border-radius:12px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.6);transform:translateZ(0)}
-    .logo img{width:100%;height:100%;object-fit:cover;border-radius:12px}
-    h1{font-family:'Playfair Display';font-weight:700;font-size:38px;line-height:1;margin:22px 0;color:#ffefc0}
+    
+    /* LOGO BORDER */
+    .logo{width:64px;height:64px;border-radius:12px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,0.6);transform:translateZ(0); border: 2px solid rgba(255, 215, 0, 0.5); padding: 2px;}
+    .logo img{width:100%;height:100%;object-fit:cover; border-radius: 10px;}
+    
+    h1{font-family:'Playfair Display';font-weight:700;font-size:38px;line-height:1;margin:22px 0;color:#ffefc0;text-shadow: 0 0 20px rgba(255, 187, 0, 0.3);}
     p.lead{color:rgba(255,255,255,0.8);max-width:720px;font-size:15px;margin:0 0 20px}
 
-    .card-wrap{z-index:3;width:100%;display:flex;justify-content:center}
-    .card{width:100%;max-width:520px;background:linear-gradient(180deg,var(--glass),var(--glass-2));border-radius:20px;padding:26px;border:1px solid var(--glass-border);backdrop-filter:blur(var(--glass-blur));box-shadow:0 10px 40px rgba(0,0,0,0.6)}
-    .card h2{font-family:'Playfair Display';margin:0 0 12px;font-size:20px;color:#ffefc0;text-align:center}
+    .card-wrap{z-index:3;width:100%;display:flex;justify-content:center;position:relative}
+    
+    /* --- SIDHAM BORDER CARD STYLE --- */
+    .card{
+      width:100%;
+      max-width:520px;
+      background: rgba(10, 5, 0, 0.7);
+      border-radius:20px;
+      padding:26px;
+      backdrop-filter:blur(16px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 
+                  0 0 0 1px rgba(255, 215, 0, 0.15),
+                  inset 0 0 20px rgba(255, 187, 0, 0.05);
+      position: relative;
+      overflow: hidden; 
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
 
-    /* Input row stacks on small screens */
+    /* RIPPLE ANIMATION STYLES */
+    span.ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 600ms linear;
+      background-color: rgba(255, 215, 0, 0.2); 
+      pointer-events: none; 
+    }
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Sidham Glowing Corners/Borders */
+    .card::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      border-radius:20px;
+      padding:1px;
+      background:linear-gradient(180deg, rgba(255,215,0,0.6), transparent 40%, transparent 60%, rgba(255,215,0,0.6));
+      -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;
+      mask-composite:exclude;
+      pointer-events:none;
+      opacity: 0.8;
+    }
+    
+    .card h2{font-family:'Playfair Display';margin:0 0 12px;font-size:20px;color:#ffefc0;text-align:center; pointer-events: none;}
+
+    /* Login Input */
     .pwd-row{display:flex;gap:12px;align-items:center;flex-direction:column}
-    input[type="password"]{width:100%;padding:14px 16px;border-radius:12px;border:none;background:rgba(255,255,255,0.02);color:#ffefc0;font-size:16px;outline:none;box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4)}
-    button.primary{width:100%;padding:12px 18px;border-radius:12px;border:none;background:var(--accent);background-size:300% 100%;cursor:pointer;color:#2b1b00;font-weight:700}
+    input[type="password"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);color:#ffefc0;font-size:16px;outline:none;transition:0.3s}
+    input[type="password"]:focus{border-color:var(--gold);box-shadow:0 0 15px rgba(255,215,0,0.1)}
+    
+    button.primary{width:100%;padding:12px 18px;border-radius:12px;border:none;background:var(--accent);background-size:300% 100%;cursor:pointer;color:#2b1b00;font-weight:700;box-shadow:0 4px 15px rgba(255,187,0,0.3); transition: transform 0.1s; position: relative; overflow: hidden;}
+    button.primary:active{transform:scale(0.97)}
 
-    .hint{font-size:13px;color:rgba(255,255,255,0.6);margin-top:12px;text-align:center}
-    .msg{margin-top:12px;padding:10px;border-radius:10px;background:rgba(255,80,80,0.08);color:#ffb3b3;border:1px solid rgba(255,80,80,0.12);display:none;text-align:center}
+    .hint{font-size:13px;color:rgba(255,255,255,0.6);margin-top:12px;text-align:center; pointer-events: none;}
+    .msg{margin-top:12px;padding:10px;border-radius:10px;background:rgba(255,80,80,0.08);color:#ffb3b3;border:1px solid rgba(255,80,80,0.12);display:none;text-align:center; pointer-events: none;}
 
-    .reveal{margin-top:18px;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);min-height:92px;display:grid;align-items:center}
-    .secret{font-family:'Playfair Display';font-size:15px;line-height:1.25;color:var(--gold);text-shadow:0 6px 20px rgba(0,0,0,0.7);white-space:pre-line}
-    .editable{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px;color:var(--gold);font-family:'Playfair Display';font-size:18px;margin-top:6px;width:100%;max-width:260px;outline:none}
-    .save-btn{margin-top:8px;padding:6px 12px;border:none;border-radius:8px;background:var(--accent);color:#2b1b00;font-weight:600;cursor:pointer;width:100%;max-width:120px}
+    /* Reveal Section */
+    .reveal{margin-top:18px;padding:18px;border-radius:12px;background:rgba(255,215,0,0.03);border:1px solid rgba(255,215,0,0.1);min-height:92px;display:none; flex-direction:column; align-items:center; position:relative}
+    .secret{font-family:'Playfair Display';font-size:16px;line-height:1.4;color:var(--gold);text-shadow:0 0 10px rgba(255,187,0,0.4);white-space:pre-line; width:100%; text-align:center}
+    
+    .editable{background:rgba(0,0,0,0.4);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:8px 12px;color:var(--gold);font-family:'Playfair Display';font-size:18px;margin-top:8px;width:100%;max-width:280px;outline:none; transition:0.3s}
+    .editable:focus{border-color:#ffdb4d; box-shadow:0 0 12px rgba(255,215,0,0.15)}
+    
+    .editable::placeholder {
+      color: rgba(255, 217, 122, 0.25);
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .save-btn{margin-top:10px;padding:8px 16px;border:none;border-radius:8px;background:var(--accent);color:#2b1b00;font-weight:700;cursor:pointer;width:100%;max-width:140px; box-shadow:0 4px 12px rgba(255,187,0,0.2); position: relative; overflow: hidden;}
+
+    /* LOCK BUTTON STYLE */
+    .lock-btn{
+        margin-top:18px;
+        padding:8px 16px;
+        border:1px solid rgba(255,80,80,0.3);
+        border-radius:8px;
+        background:rgba(255,0,0,0.1);
+        color:#ffb3b3;
+        font-weight:600;
+        cursor:pointer;
+        font-size:13px;
+        width:auto;
+        transition:0.3s;
+        display:flex;
+        align-items:center;
+        gap:6px;
+        position: relative; overflow: hidden;
+    }
+    .lock-btn:hover{ background:rgba(255,0,0,0.2); border-color:rgba(255,80,80,0.5); }
 
     .glow-line{height:2px;width:120px;background:linear-gradient(90deg,#ffbb00,#ffd97a,#ffe9a0);border-radius:20px;margin:18px auto;filter:blur(8px);opacity:0.8}
     .strip{display:none}
-
     .typing-caret { border-right: 2px solid rgba(255,217,122,0.95); padding-right:3px; }
 
     @media(min-width:900px){
-      /* Slightly adjust spacing on larger screens while keeping one-column */
       .stage{padding:40px 32px;gap:48px}
       h1{font-size:44px}
-      .card{max-width:520px;padding:28px}
+      .card{max-width:520px;padding:32px}
       .pwd-row{flex-direction:row;align-items:center}
       input[type="password"]{flex:1}
       button.primary{width:auto}
     }
-
-    @media (max-width:480px){
-      h1{font-size:32px}
-    }
+    @media (max-width:480px){ h1{font-size:32px} }
   </style>
 </head>
 <body>
+  <audio id="snd-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+  <audio id="snd-success" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
+  <audio id="snd-error" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3" preload="auto"></audio>
+  <audio id="snd-lock" src="https://assets.mixkit.co/active_storage/sfx/224/224-preview.mp3" preload="auto"></audio>
+
   <div class="stage">
     <canvas id="particles"></canvas>
 
@@ -98,8 +184,8 @@
       <div class="brand">
         <div class="logo"><img src="https://i.postimg.cc/VN13TzBp/Chat-GPT-Image-Nov-10-2025-03-05-39-PM.png" alt="DV"></div>
         <div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.6)">PRIVATE ACCESS</div>
-          <div style="font-weight:700;font-size:13px;color:rgba(255,255,255,0.85)">WALLET</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:1px">PRIVATE ACCESS</div>
+          <div style="font-weight:700;font-size:13px;color:rgba(255,255,255,0.9);letter-spacing:0.5px">WALLET</div>
         </div>
       </div>
 
@@ -109,27 +195,62 @@
     </div>
 
     <div class="card-wrap">
-      <div class="card" role="form" aria-labelledby="title">
+      <div class="card" id="main-card" role="form" aria-labelledby="title">
         <h2>⚜️</h2>
-        <div class="pwd-row">
-          <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" aria-label="Password" />
-          <button id="submit" class="primary">Submit</button>
+        
+        <div id="login-section">
+            <div class="pwd-row">
+              <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" aria-label="Password" />
+              <button id="submit" class="primary">Submit</button>
+            </div>
+            <div class="hint">CREDENTIALS</div>
+            <div class="msg" id="msg">Incorrect password. Try again.</div>
         </div>
 
-        <div class="hint">CREDENTIALS</div>
-        <div class="msg" id="msg">Incorrect password. Try again.</div>
-
-        <div class="reveal">
+        <div class="reveal" id="reveal-section">
           <div class="secret" id="secret" style="opacity:0;transform:translateY(8px);"></div>
         </div>
+        
       </div>
     </div>
-
     <div class="strip" aria-hidden="true"></div>
   </div>
 
   <script>
-    // ---------- Firebase config and init (compat CDN) ----------
+    // ---------- Audio Helper ----------
+    const sndClick = document.getElementById('snd-click');
+    const sndSuccess = document.getElementById('snd-success');
+    const sndError = document.getElementById('snd-error');
+    const sndLock = document.getElementById('snd-lock');
+    
+    sndClick.volume = 0.4;
+    sndSuccess.volume = 0.5;
+    sndError.volume = 0.3;
+    sndLock.volume = 0.5;
+
+    function playSound(type){
+        if(type === 'click') { sndClick.currentTime=0; sndClick.play().catch(()=>{}); }
+        if(type === 'success') { sndSuccess.currentTime=0; sndSuccess.play().catch(()=>{}); }
+        if(type === 'error') { sndError.currentTime=0; sndError.play().catch(()=>{}); }
+        if(type === 'lock') { sndLock.currentTime=0; sndLock.play().catch(()=>{}); }
+    }
+
+    // ---------- Trigger Confetti ----------
+    function triggerConfetti() {
+        var duration = 1000;
+        var end = Date.now() + duration;
+
+        (function frame() {
+            confetti({ particleCount: 7, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffd97a', '#ffffff', '#ffbb00'] });
+            confetti({ particleCount: 7, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ffd97a', '#ffffff', '#ffbb00'] });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        }());
+    }
+
+    // ---------- Firebase config ----------
     const firebaseConfig = {
       apiKey: "AIzaSyCtrX1wzW-3v3yrETVa0LtpLT1bTfL5jgI",
       authDomain: "gbbdd-f6411.firebaseapp.com",
@@ -140,20 +261,21 @@
       appId: "1:1055596299567:web:a7a1c12af8eaf90a9b4dda",
       measurementId: "G-1WKLZLJH5G"
     };
-    // initialize firebase
-    try { firebase.initializeApp(firebaseConfig); } catch (e) { /* already initialized? */ }
+    try { firebase.initializeApp(firebaseConfig); } catch (e) { }
     const db = firebase.database();
-    const dbRef = db.ref('passwordMessage');
-
-    // ---------- constants & elements ----------
+    
+    // ---------- Constants & Elements ----------
     const CORRECT = '03051997';
-    const EMAIL_LINE = `E= divyaakalee@gmail.com`;
+    const EMAIL_LINE = `Email: divyaakalee@gmail.com`;
     const pwd = document.getElementById('pwd');
     const btn = document.getElementById('submit');
     const msg = document.getElementById('msg');
+    const loginSection = document.getElementById('login-section');
+    const revealSection = document.getElementById('reveal-section');
     const secretEl = document.getElementById('secret');
+    const mainCardEl = document.getElementById('main-card');
 
-    // ---------- typed reveal (per-letter) ----------
+    // ---------- Typed Effect ----------
     function typeWriterEffect(text, element, delay = 40, callback) {
       element.textContent = '';
       element.classList.add('typing-caret');
@@ -171,114 +293,161 @@
       step();
     }
 
-    // ---------- firebase helpers ----------
+    // ---------- Firebase Logic ----------
     async function fetchPValue() {
       try {
         const snap = await db.ref('passwordMessage/pValue').get();
         if (snap && snap.exists()) {
-          return snap.val();
-        } else {
-          // initialize if missing
-          await db.ref('passwordMessage').set({ pValue: 'P= Divyashree', email: 'divyaakalee@gmail.com' });
-          return 'P= Divyashree';
+            let val = snap.val();
+            if(val.startsWith('P=')) val = val.replace('P=', 'Password:');
+            else if(!val.startsWith('Password:')) val = 'Password: ' + val;
+            return val;
         }
-      } catch (e) {
-        console.error('Firebase fetch error', e);
-        return 'P= Divyashree';
-      }
+        await db.ref('passwordMessage').set({ pValue: 'Password: Divyashree', email: 'divyaakalee@gmail.com' });
+        return 'Password: Divyashree';
+      } catch (e) { return 'Password: Divyashree'; }
     }
 
     async function savePValue(value) {
       try {
         await db.ref('passwordMessage/pValue').set(value);
-        // ensure email also present (optional)
-        await db.ref('passwordMessage/email').set('divyaakalee@gmail.com');
         return true;
-      } catch (e) {
-        console.error('Firebase save error', e);
-        return false;
-      }
+      } catch (e) { return false; }
     }
 
-    // Listen for remote changes so the page sees updates live
-    dbRef.on('value', (snapshot) => {
-      const data = snapshot.val();
-      if (!data) return;
-      window._remoteP = data.pValue || 'P= Divyashree';
-    }, (err) => {
-      console.error('db on error', err);
-    });
+    // ---------- LOCK FUNCTION (Slide Animation) ----------
+    function lockScreen() {
+        playSound('lock');
+        
+        // 1. Scale Card Down Slightly
+        gsap.to(mainCardEl, { scale: 0.98, duration: 0.2, yoyo: true, repeat: 1 });
 
-    // ---------- showSecret: typed lines, then editable input + save ----------
+        // 2. Animate Reveal Section OUT (To Right)
+        gsap.to(revealSection, { 
+            x: 60, 
+            opacity: 0, 
+            duration: 0.4, 
+            ease: 'power2.in', 
+            onComplete: () => {
+                revealSection.style.display = 'none';
+                secretEl.innerHTML = ''; 
+                
+                // 3. Show Login Section
+                loginSection.style.display = 'block';
+                pwd.value = ''; 
+                
+                // 4. Animate Login Section IN (From Left)
+                gsap.fromTo(loginSection, 
+                    { x: -60, opacity: 0 }, 
+                    { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
+                );
+            }
+        });
+    }
+
+    // ---------- UNLOCK/SHOW SECRET (Slide Animation) ----------
     async function showSecret() {
       msg.style.display = 'none';
-      gsap.to(secretEl, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' });
+      playSound('success'); 
+      triggerConfetti(); 
 
-      const pVal = await fetchPValue(); // returns full "P= ..." string
+      // 1. Scale Card Down Slightly
+      gsap.to(mainCardEl, { scale: 0.98, duration: 0.2, yoyo: true, repeat: 1 });
+
+      // 2. Animate Login Section OUT (To Left)
+      gsap.to(loginSection, { 
+          x: -60, 
+          opacity: 0, 
+          duration: 0.4, 
+          ease: 'power2.in', 
+          onComplete: () => {
+              loginSection.style.display = 'none';
+              
+              // 3. Show Reveal Section
+              revealSection.style.display = 'flex';
+              
+              // 4. Animate Reveal Section IN (From Right)
+              gsap.fromTo(revealSection, 
+                  { x: 60, opacity: 0 }, 
+                  { x: 0, opacity: 1, duration: 0.6, ease: 'back.out(1.2)' } // Smooth back ease
+              );
+          }
+      });
+      
+      const pVal = await fetchPValue(); 
       const line1 = EMAIL_LINE;
       const line2 = pVal;
 
       secretEl.textContent = '';
-      // type line1
+      gsap.set(secretEl, {opacity:1});
+
       typeWriterEffect(line1, secretEl, 30, () => {
-        // newline + type line2 into a span
         secretEl.appendChild(document.createElement('br'));
         const line2El = document.createElement('span');
         secretEl.appendChild(line2El);
+        
         typeWriterEffect(line2, line2El, 30, async () => {
-          // after typing, append input + save
           secretEl.appendChild(document.createElement('br'));
 
           const input = document.createElement('input');
           input.className = 'editable';
           input.id = 'editableP';
-
-          // strip leading "P=" for the input value
-          let justValue = line2;
-          if (justValue.startsWith('P=')) justValue = justValue.replace(/^P=\s*/, '');
-          input.value = justValue;
+          input.placeholder = "UPDATE PASSWORD";
+          input.value = ""; 
 
           const br = document.createElement('br');
+          
           const saveBtn = document.createElement('button');
           saveBtn.className = 'save-btn';
           saveBtn.id = 'saveP';
           saveBtn.textContent = 'Save';
 
+          const lockBtn = document.createElement('button');
+          lockBtn.className = 'lock-btn';
+          lockBtn.innerHTML = '🔒 Lock';
+          lockBtn.onclick = lockScreen; 
+
           secretEl.appendChild(input);
           secretEl.appendChild(br);
           secretEl.appendChild(saveBtn);
+          secretEl.appendChild(document.createElement('br'));
+          secretEl.appendChild(lockBtn);
 
           saveBtn.addEventListener('click', async () => {
+            playSound('click');
             const newValRaw = (document.getElementById('editableP').value || '').trim();
             if (!newValRaw) {
               alert('Please enter a valid value');
               return;
             }
-            const fullP = 'P= ' + newValRaw;
+            const fullP = 'Password: ' + newValRaw;
             const ok = await savePValue(fullP);
             if (ok) {
+              playSound('success');
               gsap.fromTo(saveBtn, { scale: 0.98 }, { scale: 1.04, duration: 0.18, yoyo: true, repeat: 1 });
-              // update the visible typed line span
               const spanAfter = secretEl.querySelector('span');
               if (spanAfter) spanAfter.textContent = fullP;
-              alert('BINGO ✅.');
+              triggerConfetti(); 
             } else {
-              alert('Failed saving to server.');
+              playSound('error');
+              alert('Failed saving.');
             }
           });
         });
       });
     }
 
-    // ---------- show error ----------
+    // ---------- Check Logic ----------
     function showError() {
+      playSound('error');
       msg.style.display = 'block';
       msg.style.opacity = 0;
       gsap.to(msg, { opacity: 1, y: -2, duration: 0.45, ease: 'power2.out' });
     }
 
-    // ---------- events ----------
     btn.addEventListener('click', () => {
+      playSound('click');
+      triggerConfetti(); 
       const v = pwd.value.trim();
       if (!v) { pwd.focus(); return; }
       if (v === CORRECT) { showSecret(); }
@@ -286,37 +455,57 @@
     });
     pwd.addEventListener('keydown', (e) => { if (e.key === 'Enter') btn.click(); });
 
-    // ---------- decorative particles background ----------
+    // ---------- CARD RIPPLE EFFECT ----------
+    function createRipple(event) {
+      const button = event.currentTarget;
+      const circle = document.createElement("span");
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
+
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+      circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+      circle.classList.add("ripple");
+
+      const ripple = button.getElementsByClassName("ripple")[0];
+      if (ripple) { ripple.remove(); }
+      button.appendChild(circle);
+    }
+    const mainCard = document.getElementById("main-card");
+    mainCard.addEventListener("click", createRipple);
+
+
+    // ---------- JUGNU PARTICLES (HIGH DENSITY) ----------
     (function () {
       const canvas = document.getElementById('particles');
       const ctx = canvas.getContext('2d');
       let W = canvas.width = innerWidth;
       let H = canvas.height = innerHeight;
       const parts = [];
-      const colors = ['rgba(255,217,122,0.22)', 'rgba(255,187,0,0.18)', 'rgba(197,140,255,0.08)'];
-
+      const colors = ['rgba(255,215,0,0.6)', 'rgba(255,223,0,0.5)', 'rgba(255,165,0,0.4)'];
       function rand(min, max) { return Math.random() * (max - min) + min; }
       function initializeParticles() {
         parts.length = 0;
-        const count = Math.round((W * H) / 18000);
+        // Increased Density (Low divisor = more particles)
+        const count = Math.round((W * H) / 5000); 
         for (let i = 0; i < count; i++) {
           parts.push({
-            x: Math.random() * W,
-            y: Math.random() * H,
-            r: rand(0.6, 3.2),
-            vx: rand(-0.12, 0.12),
-            vy: rand(-0.04, 0.04),
-            c: colors[i % colors.length]
+            x: Math.random() * W, y: Math.random() * H,
+            r: rand(0.5, 2.5), vx: rand(-0.3, 0.3), vy: rand(-0.2, 0.2),
+            c: colors[i % colors.length], alpha: Math.random(), pulseSpeed: rand(0.02, 0.05)
           });
         }
       }
       function draw() {
         ctx.clearRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'lighter';
         for (const p of parts) {
           p.x += p.vx; p.y += p.vy;
           if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
           if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;
-          ctx.beginPath(); ctx.fillStyle = p.c; ctx.globalCompositeOperation = 'lighter';
+          p.alpha += p.pulseSpeed;
+          const opacity = (Math.sin(p.alpha) + 1) / 2 * 0.8 + 0.2;
+          ctx.beginPath(); ctx.fillStyle = p.c; ctx.globalAlpha = opacity;
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
         }
         requestAnimationFrame(draw);
@@ -325,12 +514,10 @@
       initializeParticles(); draw();
     })();
 
-    // micro-entrances
+    // Animation Entrances
     gsap.from('.logo', { y: 20, opacity: 0, duration: 0.9, ease: 'power3.out' });
     gsap.from('#title', { y: 18, opacity: 0, duration: 1, delay: 0.12, ease: 'power3.out' });
     gsap.from('.card', { y: 24, opacity: 0, duration: 1.1, delay: 0.25, ease: 'power3.out' });
-
-    // focus
     pwd.focus();
   </script>
 </body>
