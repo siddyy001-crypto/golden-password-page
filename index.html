@@ -18,11 +18,12 @@
   <style>
     :root{
       --bg1:#0f0a00; --bg2:#1f1400;
-      --accent:linear-gradient(90deg,#ffd97a,#ffbb00 50%,#ffe9a0);
+      --accent:linear-gradient(135deg, #fff4d6, #ffd97a, #ffbb00);
       --glass:rgba(20, 20, 20, 0.6); 
       --glass-border:rgba(255, 215, 0, 0.3); 
       --gold:#ffd97a; 
-      --gold-glow: #ffbb00;
+      --gold-border: #c59d00;
+      --text-dark: #3e2700;
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:
@@ -60,6 +61,16 @@
 
     .card-wrap{z-index:3;width:100%;display:flex;justify-content:center;position:relative}
     
+    /* --- FLOATING ANIMATION (Sanjeevani Style) --- */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); }
+        100% { transform: translateY(0px); }
+    }
+    .flying {
+        animation: float 6s ease-in-out infinite;
+    }
+    
     /* --- SIDHAM BORDER CARD STYLE --- */
     .card{
       width:100%;
@@ -76,7 +87,7 @@
       border: 1px solid rgba(255, 215, 0, 0.2);
     }
 
-    /* RIPPLE ANIMATION STYLES */
+    /* RIPPLE ANIMATION */
     span.ripple {
       position: absolute;
       border-radius: 50%;
@@ -86,25 +97,14 @@
       pointer-events: none; 
     }
     @keyframes ripple {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
+      to { transform: scale(4); opacity: 0; }
     }
 
-    /* Sidham Glowing Corners/Borders */
     .card::before {
-      content:'';
-      position:absolute;
-      inset:0;
-      border-radius:20px;
-      padding:1px;
+      content:''; position:absolute; inset:0; border-radius:20px; padding:1px;
       background:linear-gradient(180deg, rgba(255,215,0,0.6), transparent 40%, transparent 60%, rgba(255,215,0,0.6));
       -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite:xor;
-      mask-composite:exclude;
-      pointer-events:none;
-      opacity: 0.8;
+      -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; opacity: 0.8;
     }
     
     .card h2{font-family:'Playfair Display';margin:0 0 12px;font-size:20px;color:#ffefc0;text-align:center; pointer-events: none;}
@@ -114,8 +114,36 @@
     input[type="password"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);color:#ffefc0;font-size:16px;outline:none;transition:0.3s}
     input[type="password"]:focus{border-color:var(--gold);box-shadow:0 0 15px rgba(255,215,0,0.1)}
     
-    button.primary{width:100%;padding:12px 18px;border-radius:12px;border:none;background:var(--accent);background-size:300% 100%;cursor:pointer;color:#2b1b00;font-weight:700;box-shadow:0 4px 15px rgba(255,187,0,0.3); transition: transform 0.1s; position: relative; overflow: hidden;}
-    button.primary:active{transform:scale(0.97)}
+    /* --- UNIFIED BEIGE/GOLD BUTTON STYLE --- */
+    .gold-btn {
+      width:100%;
+      padding:12px 18px;
+      border-radius:12px;
+      border: 1px solid var(--gold-border); 
+      background: var(--accent); 
+      background-size: 200% 100%;
+      cursor:pointer;
+      color: var(--text-dark); 
+      font-weight:700;
+      box-shadow:0 4px 15px rgba(255,187,0,0.2); 
+      transition: transform 0.1s, box-shadow 0.3s; 
+      position: relative; 
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+    .gold-btn:hover { box-shadow:0 0 20px rgba(255,215,0,0.4); }
+    .gold-btn:active { transform:scale(0.97); }
+
+    .lock-btn {
+      margin-top:18px;
+      width: auto;
+      font-size: 14px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #fff4d6, #e6cfa0); 
+    }
 
     .hint{font-size:13px;color:rgba(255,255,255,0.6);margin-top:12px;text-align:center; pointer-events: none;}
     .msg{margin-top:12px;padding:10px;border-radius:10px;background:rgba(255,80,80,0.08);color:#ffb3b3;border:1px solid rgba(255,80,80,0.12);display:none;text-align:center; pointer-events: none;}
@@ -134,27 +162,7 @@
       letter-spacing: 1px;
     }
 
-    .save-btn{margin-top:10px;padding:8px 16px;border:none;border-radius:8px;background:var(--accent);color:#2b1b00;font-weight:700;cursor:pointer;width:100%;max-width:140px; box-shadow:0 4px 12px rgba(255,187,0,0.2); position: relative; overflow: hidden;}
-
-    /* LOCK BUTTON STYLE */
-    .lock-btn{
-        margin-top:18px;
-        padding:8px 16px;
-        border:1px solid rgba(255,80,80,0.3);
-        border-radius:8px;
-        background:rgba(255,0,0,0.1);
-        color:#ffb3b3;
-        font-weight:600;
-        cursor:pointer;
-        font-size:13px;
-        width:auto;
-        transition:0.3s;
-        display:flex;
-        align-items:center;
-        gap:6px;
-        position: relative; overflow: hidden;
-    }
-    .lock-btn:hover{ background:rgba(255,0,0,0.2); border-color:rgba(255,80,80,0.5); }
+    .save-wrapper { margin-top: 10px; width: 100%; display:flex; justify-content:center;}
 
     .glow-line{height:2px;width:120px;background:linear-gradient(90deg,#ffbb00,#ffd97a,#ffe9a0);border-radius:20px;margin:18px auto;filter:blur(8px);opacity:0.8}
     .strip{display:none}
@@ -166,7 +174,7 @@
       .card{max-width:520px;padding:32px}
       .pwd-row{flex-direction:row;align-items:center}
       input[type="password"]{flex:1}
-      button.primary{width:auto}
+      .gold-btn{width:auto}
     }
     @media (max-width:480px){ h1{font-size:32px} }
   </style>
@@ -201,7 +209,7 @@
         <div id="login-section">
             <div class="pwd-row">
               <input id="pwd" type="password" inputmode="numeric" placeholder="Enter password" aria-label="Password" />
-              <button id="submit" class="primary">Submit</button>
+              <button id="submit" class="gold-btn">Go Ahead</button>
             </div>
             <div class="hint">CREDENTIALS</div>
             <div class="msg" id="msg">Incorrect password. Try again.</div>
@@ -235,19 +243,56 @@
         if(type === 'lock') { sndLock.currentTime=0; sndLock.play().catch(()=>{}); }
     }
 
-    // ---------- Trigger Confetti ----------
-    function triggerConfetti() {
-        var duration = 1000;
-        var end = Date.now() + duration;
+    // ---------- CONFETTI FUNCTIONS (LOCALIZED) ----------
+    
+    // 1. Gold Flower Spray - FROM SPECIFIC BUTTON
+    function triggerButtonConfetti(btnElement) {
+        const rect = btnElement.getBoundingClientRect();
+        // Calculate center of button relative to viewport (0 to 1 scale)
+        const originX = (rect.left + rect.width / 2) / window.innerWidth;
+        const originY = (rect.top + rect.height / 2) / window.innerHeight;
 
-        (function frame() {
-            confetti({ particleCount: 7, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffd97a', '#ffffff', '#ffbb00'] });
-            confetti({ particleCount: 7, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ffd97a', '#ffffff', '#ffbb00'] });
+        var scalar = 2;
+        var flower = confetti.shapeFromText({ text: '✿', scalar });
+        
+        confetti({
+            particleCount: 25,
+            spread: 60,
+            origin: { x: originX, y: originY },
+            colors: ['#ffd97a', '#ffffff', '#f5f5dc', '#d4af37'],
+            shapes: ['circle', 'star'],
+            scalar: 0.7,
+            startVelocity: 25,
+            gravity: 1.2
+        });
+    }
 
-            if (Date.now() < end) {
-                requestAnimationFrame(frame);
-            }
-        }());
+    // 2. Red Flower Spray (For Lock)
+    function triggerRedConfetti() {
+        confetti({
+            particleCount: 40,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#ff0000', '#8b0000', '#ffcccc'],
+            shapes: ['circle'],
+            scalar: 0.9,
+            drift: 0
+        });
+    }
+
+    // 3. Red CROSS Spray (For Error)
+    function triggerErrorConfetti() {
+        var cross = confetti.shapeFromText({ text: '❌', scalar: 2.5 });
+        confetti({
+            particleCount: 45,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#ff0000', '#8b0000'],
+            shapes: [cross],
+            scalar: 1.5,
+            startVelocity: 35,
+            gravity: 0.8
+        });
     }
 
     // ---------- Firebase config ----------
@@ -315,28 +360,20 @@
       } catch (e) { return false; }
     }
 
-    // ---------- LOCK FUNCTION (Slide Animation) ----------
+    // ---------- LOCK FUNCTION ----------
     function lockScreen() {
         playSound('lock');
+        triggerRedConfetti(); 
         
-        // 1. Scale Card Down Slightly
         gsap.to(mainCardEl, { scale: 0.98, duration: 0.2, yoyo: true, repeat: 1 });
 
-        // 2. Animate Reveal Section OUT (To Right)
         gsap.to(revealSection, { 
-            x: 60, 
-            opacity: 0, 
-            duration: 0.4, 
-            ease: 'power2.in', 
+            x: 60, opacity: 0, duration: 0.4, ease: 'power2.in', 
             onComplete: () => {
                 revealSection.style.display = 'none';
                 secretEl.innerHTML = ''; 
-                
-                // 3. Show Login Section
                 loginSection.style.display = 'block';
                 pwd.value = ''; 
-                
-                // 4. Animate Login Section IN (From Left)
                 gsap.fromTo(loginSection, 
                     { x: -60, opacity: 0 }, 
                     { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
@@ -345,31 +382,24 @@
         });
     }
 
-    // ---------- UNLOCK/SHOW SECRET (Slide Animation) ----------
-    async function showSecret() {
+    // ---------- UNLOCK/SHOW SECRET ----------
+    async function showSecret(triggerBtn) {
       msg.style.display = 'none';
       playSound('success'); 
-      triggerConfetti(); 
+      
+      // Trigger localized confetti from the specific button clicked
+      if(triggerBtn) triggerButtonConfetti(triggerBtn);
 
-      // 1. Scale Card Down Slightly
       gsap.to(mainCardEl, { scale: 0.98, duration: 0.2, yoyo: true, repeat: 1 });
 
-      // 2. Animate Login Section OUT (To Left)
       gsap.to(loginSection, { 
-          x: -60, 
-          opacity: 0, 
-          duration: 0.4, 
-          ease: 'power2.in', 
+          x: -60, opacity: 0, duration: 0.4, ease: 'power2.in', 
           onComplete: () => {
               loginSection.style.display = 'none';
-              
-              // 3. Show Reveal Section
               revealSection.style.display = 'flex';
-              
-              // 4. Animate Reveal Section IN (From Right)
               gsap.fromTo(revealSection, 
                   { x: 60, opacity: 0 }, 
-                  { x: 0, opacity: 1, duration: 0.6, ease: 'back.out(1.2)' } // Smooth back ease
+                  { x: 0, opacity: 1, duration: 0.6, ease: 'back.out(1.2)' } 
               );
           }
       });
@@ -397,23 +427,28 @@
 
           const br = document.createElement('br');
           
+          const btnWrap = document.createElement('div');
+          btnWrap.className = 'save-wrapper';
+
           const saveBtn = document.createElement('button');
-          saveBtn.className = 'save-btn';
+          saveBtn.className = 'gold-btn'; 
           saveBtn.id = 'saveP';
-          saveBtn.textContent = 'Save';
+          saveBtn.textContent = 'Update'; 
+
+          btnWrap.appendChild(saveBtn);
 
           const lockBtn = document.createElement('button');
-          lockBtn.className = 'lock-btn';
+          lockBtn.className = 'gold-btn lock-btn'; 
           lockBtn.innerHTML = '🔒 Lock';
           lockBtn.onclick = lockScreen; 
 
           secretEl.appendChild(input);
           secretEl.appendChild(br);
-          secretEl.appendChild(saveBtn);
+          secretEl.appendChild(btnWrap);
           secretEl.appendChild(document.createElement('br'));
           secretEl.appendChild(lockBtn);
 
-          saveBtn.addEventListener('click', async () => {
+          saveBtn.addEventListener('click', async (e) => {
             playSound('click');
             const newValRaw = (document.getElementById('editableP').value || '').trim();
             if (!newValRaw) {
@@ -424,10 +459,11 @@
             const ok = await savePValue(fullP);
             if (ok) {
               playSound('success');
+              // Trigger localized confetti from update button
+              triggerButtonConfetti(e.target);
               gsap.fromTo(saveBtn, { scale: 0.98 }, { scale: 1.04, duration: 0.18, yoyo: true, repeat: 1 });
               const spanAfter = secretEl.querySelector('span');
               if (spanAfter) spanAfter.textContent = fullP;
-              triggerConfetti(); 
             } else {
               playSound('error');
               alert('Failed saving.');
@@ -445,18 +481,24 @@
       gsap.to(msg, { opacity: 1, y: -2, duration: 0.45, ease: 'power2.out' });
     }
 
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
       playSound('click');
-      triggerConfetti(); 
       const v = pwd.value.trim();
       if (!v) { pwd.focus(); return; }
-      if (v === CORRECT) { showSecret(); }
-      else { showError(); }
+      if (v === CORRECT) { 
+          showSecret(e.target); // Pass button for confetti origin
+      } else { 
+          triggerErrorConfetti(); 
+          showError(); 
+      }
     });
     pwd.addEventListener('keydown', (e) => { if (e.key === 'Enter') btn.click(); });
 
     // ---------- CARD RIPPLE EFFECT ----------
     function createRipple(event) {
+      // Don't create ripple if we clicked an input or button (visual clarity)
+      if(event.target.tagName === 'INPUT' || event.target.tagName === 'BUTTON') return;
+
       const button = event.currentTarget;
       const circle = document.createElement("span");
       const diameter = Math.max(button.clientWidth, button.clientHeight);
@@ -471,54 +513,3 @@
       if (ripple) { ripple.remove(); }
       button.appendChild(circle);
     }
-    const mainCard = document.getElementById("main-card");
-    mainCard.addEventListener("click", createRipple);
-
-
-    // ---------- JUGNU PARTICLES (HIGH DENSITY) ----------
-    (function () {
-      const canvas = document.getElementById('particles');
-      const ctx = canvas.getContext('2d');
-      let W = canvas.width = innerWidth;
-      let H = canvas.height = innerHeight;
-      const parts = [];
-      const colors = ['rgba(255,215,0,0.6)', 'rgba(255,223,0,0.5)', 'rgba(255,165,0,0.4)'];
-      function rand(min, max) { return Math.random() * (max - min) + min; }
-      function initializeParticles() {
-        parts.length = 0;
-        // Increased Density (Low divisor = more particles)
-        const count = Math.round((W * H) / 5000); 
-        for (let i = 0; i < count; i++) {
-          parts.push({
-            x: Math.random() * W, y: Math.random() * H,
-            r: rand(0.5, 2.5), vx: rand(-0.3, 0.3), vy: rand(-0.2, 0.2),
-            c: colors[i % colors.length], alpha: Math.random(), pulseSpeed: rand(0.02, 0.05)
-          });
-        }
-      }
-      function draw() {
-        ctx.clearRect(0, 0, W, H);
-        ctx.globalCompositeOperation = 'lighter';
-        for (const p of parts) {
-          p.x += p.vx; p.y += p.vy;
-          if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
-          if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;
-          p.alpha += p.pulseSpeed;
-          const opacity = (Math.sin(p.alpha) + 1) / 2 * 0.8 + 0.2;
-          ctx.beginPath(); ctx.fillStyle = p.c; ctx.globalAlpha = opacity;
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-        }
-        requestAnimationFrame(draw);
-      }
-      window.addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; initializeParticles(); });
-      initializeParticles(); draw();
-    })();
-
-    // Animation Entrances
-    gsap.from('.logo', { y: 20, opacity: 0, duration: 0.9, ease: 'power3.out' });
-    gsap.from('#title', { y: 18, opacity: 0, duration: 1, delay: 0.12, ease: 'power3.out' });
-    gsap.from('.card', { y: 24, opacity: 0, duration: 1.1, delay: 0.25, ease: 'power3.out' });
-    pwd.focus();
-  </script>
-</body>
-</html>
